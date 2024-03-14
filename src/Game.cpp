@@ -3,14 +3,22 @@
 #include "Map.h"
 #include "ECS/Components.h"
 #include "Vector2D.h"
+#include "Collision.h"
 
 Map *map;
 Manager manager;
 
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
-    
-auto& player(manager.addEntity());
+
+std::vector<ColliderComponent *> Game::colliders;
+
+auto &player(manager.addEntity());
+auto &wall(manager.addEntity());
+
+auto &tile0(manager.addEntity());
+auto &tile1(manager.addEntity());
+auto &tile2(manager.addEntity());
 
 Game::Game()
 {
@@ -22,6 +30,7 @@ Game::~Game()
 void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
     int flags = 0;
+
     if (fullscreen)
     {
         flags = SDL_WINDOW_FULLSCREEN;
@@ -41,17 +50,28 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = true;
     }
     map = new Map();
-    
-    //ecs implementation
 
-    player.addComponent<TransformComponent>(); 
+    // ecs implementation
+
+    tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
+    tile1.addComponent<TileComponent>(250, 250, 32, 32, 1);
+    tile1.addComponent<ColliderComponent>("dirt");
+    tile2.addComponent<TileComponent>(150, 150, 32, 32, 2);
+    tile2.addComponent<ColliderComponent>("grass");
+
+    player.addComponent<TransformComponent>(2);
     player.addComponent<SpriteComponent>("assets/snake2d.png");
     player.addComponent<KeyboardController>();
+    player.addComponent<ColliderComponent>("player");
+
+    wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
+    wall.addComponent<SpriteComponent>("assets/dirt.png");
+    wall.addComponent<ColliderComponent>("wall");
 }
 
 void Game::handleEvents()
 {
-        SDL_PollEvent(&event);
+    SDL_PollEvent(&event);
 
     switch (event.type)
     {
@@ -68,12 +88,18 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
+    // Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
+    for (auto cc : colliders)
+    {
+        Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
+    }
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    map->DrawMap();
+    // map->DrawMap();
 
     manager.draw();
     SDL_RenderPresent(renderer);
