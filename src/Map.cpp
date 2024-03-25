@@ -1,12 +1,12 @@
 #include "Map.h"
-#include "TextureManager.h"
+#include "Texture.h"
 
 int lvl1[20][25];
 Map::Map()
 {
-    dirt = TextureManager::LoadTexture("assets/dirt.png");
-    grass = TextureManager::LoadTexture("assets/grass.png");
-    water = TextureManager::LoadTexture("assets/water.png");
+    //dirt = TextureManager::LoadTexture("assets/dirt.png");
+    //grass = TextureManager::LoadTexture("assets/grass.png");
+    //water = TextureManager::LoadTexture("assets/water.png");
 
     LoadMap(lvl1);
 
@@ -46,7 +46,7 @@ void Map::DrawMap()
             dest.y = row * 32;
             dest.x = col * 32;
 
-            switch (type)
+            /*switch (type)
             {
             case 0:
                 TextureManager::Draw(water, src, dest);
@@ -59,7 +59,7 @@ void Map::DrawMap()
                 break;
             default:
                 break;
-            }
+            }*/
         }
     }
 }

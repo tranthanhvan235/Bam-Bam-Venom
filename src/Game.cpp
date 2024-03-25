@@ -15,7 +15,7 @@ void Game::setGameState(const int &state)
 }
 
 void Game::gameReset()
-{
+{ 
     score = 0;
 
     level = MIN_LEVEL;

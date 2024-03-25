@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -25,11 +25,11 @@ public:
     void gameReset();
     void menuReset();
 
-void handlePlayEvent(SDL_Renderer *renderer, SDL_Event &event);
+    void handlePlayEvent(SDL_Renderer *renderer, SDL_Event &event);
 
     void setGameState(const int &state);
     void manageState(SDL_Renderer *renderer);
-    
+
 private:
     int gameState;
 
@@ -38,4 +38,3 @@ private:
 
     bool loop = true;
 };
-
