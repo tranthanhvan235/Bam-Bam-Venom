@@ -25,7 +25,7 @@ public:
         tileRect.h = h;
         tileID = id;
 
-        switch (tileID)
+       /*/ switch (tileID)
         {
         case 0:
             path = "assets/water.png";
@@ -38,7 +38,7 @@ public:
             //break;
         default:
             break;
-        }
+        }*/
     }
 
     void init() override

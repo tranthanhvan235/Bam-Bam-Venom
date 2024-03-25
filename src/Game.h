@@ -1,31 +1,41 @@
 #pragma once 
 
-#include <SDL.h>
-#include <SDL_image.h>
 #include <iostream>
 #include <vector>
+#include <ctime>
 
-class ColliderComponent;
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
+
+#include "const.h"
+
 class Game
 {
 public:
     Game();
     ~Game();
 
-    void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen);
+    void play(SDL_Renderer *renderer);
+    void menu(SDL_Renderer *renderer);
+    void help(SDL_Renderer *renderer);
+    void lose(SDL_Renderer *renderer);
 
-    void handleEvents();
-    void update();
-    bool running() { return isRunning; };
-    void render();
-    void clean();
+    void gameReset();
+    void menuReset();
 
-    static SDL_Renderer *renderer;
-    static SDL_Event event;
-    static std::vector<ColliderComponent*> colliders;
+void handlePlayEvent(SDL_Renderer *renderer, SDL_Event &event);
+
+    void setGameState(const int &state);
+    void manageState(SDL_Renderer *renderer);
+    
 private:
-    int cnt = 0;
-    bool isRunning;
-    SDL_Window *window;
+    int gameState;
+
+    bool musicState = ON;
+    bool soundState = ON;
+
+    bool loop = true;
 };
 

@@ -1,114 +1,291 @@
 #include "Game.h"
-#include "TextureManager.h"
-#include "Map.h"
-#include "ECS/Components.h"
-#include "Vector2D.h"
-#include "Collision.h"
-
-Map *map;
-Manager manager;
-
-SDL_Renderer *Game::renderer = nullptr;
-SDL_Event Game::event;
-
-std::vector<ColliderComponent *> Game::colliders;
-
-auto &player(manager.addEntity());
-auto &wall(manager.addEntity());
-
-auto &tile0(manager.addEntity());
-auto &tile1(manager.addEntity());
-auto &tile2(manager.addEntity());
 
 Game::Game()
 {
+    gameState = MENU;
 }
 Game::~Game()
 {
+    gameState = QUIT;
 }
 
-void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
+void Game::setGameState(const int &state)
 {
-    int flags = 0;
+    gameState = state;
+}
 
-    if (fullscreen)
+void Game::gameReset()
+{
+    score = 0;
+
+    level = MIN_LEVEL;
+
+    live = START_LIVE;
+
+    /*...*/
+
+}
+
+void Game::handlePlayEvent(SDL_Renderer *renderer, SDL_Event &event)
+{
+    //if(event.type == SDL_KEYDOWN)
+    /*.....*/
+}
+
+void Game::play(SDL_Renderer *renderer)
+{
+    Uint32 frameStart, frameTime;
+
+    gameReset();
+
+    SDL_Event event;
+    bool quit = false;
+    while (!quit)
     {
-        flags = SDL_WINDOW_FULLSCREEN;
-    }
+        frameStart = SDL_GetTicks();
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
-    {
-        // std::cout << "Subsytems Initialised!..." << std::endl;
-
-        window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-        renderer = SDL_CreateRenderer(window, -1, 0);
-        if (renderer)
+        //Handle events on queue
+        while (SDL_PollEvent(&event))
         {
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                gameState = QUIT;
+                break;
+            }
+
+            handlePlayEvent(renderer, event);
         }
 
-        isRunning = true;
-    }
-    map = new Map();
+        //Clear screen
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(renderer);
 
-    // ecs implementation
+        // Render
 
-    tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
-    tile1.addComponent<TileComponent>(250, 250, 32, 32, 1);
-    tile1.addComponent<ColliderComponent>("dirt");
-    tile2.addComponent<TileComponent>(150, 150, 32, 32, 2);
-    tile2.addComponent<ColliderComponent>("grass");
+        // Update screen
+        SDL_RenderPresent(renderer);
 
-    player.addComponent<TransformComponent>(2);
-    player.addComponent<SpriteComponent>("assets/snake2d.png");
-    player.addComponent<KeyboardController>();
-    player.addComponent<ColliderComponent>("player");
+        // Frame rate
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < DELAY_TIME)
+		{
+			SDL_Delay(DELAY_TIME - frameTime);
+		}
 
-    wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
-    wall.addComponent<SpriteComponent>("assets/dirt.png");
-    wall.addComponent<ColliderComponent>("wall");
+        // Change state
+		if (live == 0)
+		{
+			gameState = LOSE;
+
+			//Mix_PlayChannel(-1, loseSound, 0);
+		}
+
+        // Quit
+		if (gameState != PLAY)
+			quit = true;
+    }  
 }
 
-void Game::handleEvents()
+void Game::menuReset()
 {
-    SDL_PollEvent(&event);
+    /*
+    if (musicState)
+		Mix_PlayMusic(music, -1);
 
-    switch (event.type)
+	if (soundState)
+		Mix_Resume(-1);
+    */
+}
+
+void Game::menu(SDL_Renderer *renderer)
+{
+    Uint32 frameStart, frameTime;
+
+	menuReset();
+    SDL_Event event;
+	bool quit = false;
+    while(!quit)
     {
-    case SDL_QUIT:
-        isRunning = false;
-        break;
+        frameStart = SDL_GetTicks();
+        while(SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                gameState = QUIT;
+                break;
 
-    default:
-        break;
+            case SDL_MOUSEMOTION:
+                /*...*/
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                /*...*/
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                /*...*/
+                break;
+            }
+        }
+
+    // Clear screen
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(renderer);
+
+    // Render
+
+    // Update screen
+		SDL_RenderPresent(renderer);
+
+		// Frame rate
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < DELAY_TIME)
+		{
+			SDL_Delay(DELAY_TIME - frameTime);
+		}
+
+		// Quit
+		if (gameState != MENU)
+			quit = true;
     }
 }
 
-void Game::update()
+void Game::help(SDL_Renderer *renderer)
 {
-    manager.refresh();
-    manager.update();
-    // Vector2D playerPos = player.getComponent<TransformComponent>().position;
+	Uint32 frameStart, frameTime;
 
-    for (auto cc : colliders)
-    {
-        Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
-    }
+	SDL_Event event;
+	bool quit = false;
+	while (!quit)
+	{
+		frameStart = SDL_GetTicks();
+
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				gameState = QUIT;
+				break;
+			}
+			if (event.type == SDL_KEYDOWN)
+			{
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_ESCAPE:
+					gameState = MENU;
+					break;
+				case SDLK_SPACE:
+					gameState = PLAY;
+					break;
+				}
+			}
+		}
+
+		// Clear screen
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(renderer);
+
+		// Render
+		
+		// Update screen
+		SDL_RenderPresent(renderer);
+
+		// Frame rate
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < DELAY_TIME)
+		{
+			SDL_Delay(DELAY_TIME - frameTime);
+		}
+
+		// Quit
+		if (gameState != HELP)
+			quit = true;
+	}
 }
 
-void Game::render()
+void Game::lose(SDL_Renderer *renderer)
 {
-    SDL_RenderClear(renderer);
-    // map->DrawMap();
+	Uint32 frameStart, frameTime;
 
-    manager.draw();
-    SDL_RenderPresent(renderer);
+	//updateHighestScore();
+	//readHighestScore();
+
+	//Mix_HaltMusic();
+
+	SDL_Event event;
+	bool quit = false;
+	while (!quit)
+	{
+		frameStart = SDL_GetTicks();
+
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				gameState = QUIT;
+				break;
+			}
+			if (event.type == SDL_KEYDOWN)
+			{
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_ESCAPE:
+					gameState = QUIT;
+				case SDLK_SPACE:
+					gameState = MENU;
+					break;
+				}
+			}
+		}
+
+		// Clear screen
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(renderer);
+
+		// Render
+	
+		// Update screen
+		SDL_RenderPresent(renderer);
+
+		// Frame rate
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < DELAY_TIME)
+		{
+			SDL_Delay(DELAY_TIME - frameTime);
+		}
+
+		// Quit
+		if (gameState != LOSE)
+			quit = true;
+	}
 }
 
-void Game::clean()
+// manage all states of the game
+void Game::manageState(SDL_Renderer *renderer)
 {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_Quit();
-    std::cout << "Game Cleaned" << std::endl;
+	while (loop)
+	{
+		switch (gameState)
+		{
+		case MENU:
+			menu(renderer);
+			break;
+		case HELP:
+			help(renderer);
+			break;
+		case PLAY:
+			play(renderer);
+			break;
+		case LOSE:
+			lose(renderer);
+			break;
+		case QUIT:
+			loop = false;
+			break;
+		}
+	}
 }

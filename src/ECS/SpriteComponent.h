@@ -2,7 +2,7 @@
 
 #include "Components.h"
 #include "SDL.h"
-#include "../TextureManager.h"
+#include "../Texture.h"
 
 class SpriteComponent : public Component
 {
@@ -26,7 +26,7 @@ public:
 
     void setTex(const char* path) 
     {
-        texture = TextureManager::LoadTexture(path);
+       // texture = Texture::LoadTexture(path);
     }
     void init() override
     {
@@ -47,7 +47,6 @@ public:
 
     void draw() override
     {
-        TextureManager::Draw(texture, srcREct, destRect);
-
+       // TextureManager::Draw(texture, srcREct, destRect);
     }
 };
