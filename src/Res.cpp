@@ -1,5 +1,23 @@
 #include "Res.h"
 
+TTF_Font *menuFont,											 // Menu font
+	*titleFont, *versionFont, *scoreFont, *highestScoreFont; // Title font
+
+
+Texture title, version; // Title texture
+Texture background, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
+
+Mix_Music *music;
+Mix_Chunk *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound
+
+const char *menuText[NUM_BUTTONS] = {"Play", "Help", "Quit"}; // Menu text
+
+std::vector<Button> buttons;
+SDL_Rect musicRect = {MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT};
+SDL_Rect soundRect = {SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT};
+Button musicButton(musicRect, TRANSPARENT, menuFont, TRANSPARENT);
+Button soundButton(soundRect, TRANSPARENT, menuFont, TRANSPARENT);
+
 void loadFont(TTF_Font *&font, const char *path, const int &size)
 {
 	font = TTF_OpenFont(path, size);
@@ -104,36 +122,36 @@ bool init(SDL_Window *&window, SDL_Renderer *&renderer)
 
 void load(SDL_Renderer *&renderer)
 {
-    /*
+    
 	// Load music
-	loadMusic(music, "assets/sounds/music.wav");
-	loadSound(clickSound, "assets/sounds/click_sound.wav");
+	loadMusic(music,"assets/sound/song_suitable_snake.ogg");
+	/*loadSound(clickSound, "assets/sounds/click_sound.wav");
 	loadSound(leaveSound, "assets/sounds/leave_sound.wav");
 	loadSound(levelSound, "assets/sounds/level_sound.wav");
 	loadSound(loseSound, "assets/sounds/lose_sound.wav");
 	loadSound(receiveSound, "assets/sounds/receive_sound.wav");
 	loadSound(wasteSound, "assets/sounds/waste_sound.wav");
-	loadSound(warningSound, "assets/sounds/warning_sound.wav");
+	loadSound(warningSound, "assets/sounds/warning_sound.wav");*/
 
 	// Load font
-	loadFont(menuFont, "assets/fonts/menu.ttf", MENU_SIZE);
-	loadFont(titleFont, "assets/fonts/title.ttf", TITLE_SIZE);
-	loadFont(versionFont, "assets/fonts/version.ttf", VERSION_SIZE);
-	loadFont(scoreFont, "assets/fonts/version.ttf", SCORE_SIZE);
-	loadFont(highestScoreFont, "assets/fonts/version.ttf", HIGHEST_SCORE_SIZE);
+	loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
+	loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
+	loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
+	/*loadFont(scoreFont, "assets/fonts/version.ttf", SCORE_SIZE);
+	loadFont(highestScoreFont, "assets/fonts/version.ttf", HIGHEST_SCORE_SIZE);*/
 
 	// Load images
-	loadImage(renderer, background, "assets/images/background.png");
-	loadImage(renderer, helpground, "assets/images/helpground.png");
-	loadImage(renderer, musicOn, "assets/icons/musicOn.png");
-	loadImage(renderer, soundOn, "assets/icons/soundOn.png");
-	loadImage(renderer, musicOff, "assets/icons/musicOff.png");
-	loadImage(renderer, soundOff, "assets/icons/soundOff.png");
-	loadImage(renderer, gameground, "assets/images/gameground.png");
-	loadImage(renderer, stand, "assets/images/stand.png");
-	loadImage(renderer, loseground, "assets/images/loseground.png");
-	loadImage(renderer, heart, "assets/images/heart.png");
-
+	loadImage(renderer, background, "assets/background/background.png");
+	//loadImage(renderer, helpground, "assets/images/helpground.png");
+	//loadImage(renderer, musicOn, "assets/icons/musicOn.png");
+	loadImage(renderer, musicOn, "assets/button/Regular_03.png");
+	//loadImage(renderer, musicOff, "assets/icons/musicOff.png");
+	loadImage(renderer, musicOff, "assets/button/Disable_03.png");
+	loadImage(renderer, gameground, "assets/background/candyBackground.png");
+	//loadImage(renderer, stand, "assets/images/stand.png");
+	//loadImage(renderer, loseground, "assets/images/loseground.png");
+	//loadImage(renderer, heart, "assets/images/heart.png");
+	/*
 	customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
 	customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
 	customerStand.loadFromFile(renderer, "assets/images/seller/sellerStand.png");
@@ -155,21 +173,21 @@ void load(SDL_Renderer *&renderer)
 	}
 
 	loadImage(renderer, talkBubble, "assets/images/customer/talk_bubble.png");
-
+*/
 	// Load texts
-	title.loadFromRenderedText(renderer, WINDOW_TITLE, ORANGE, titleFont);
-	version.loadFromRenderedText(renderer, VERSION_INFO, BLACK, versionFont);
-
+	title.loadFromRenderedText(renderer, WINDOW_TITLE, WHITE, titleFont);
+	version.loadFromRenderedText(renderer, VERSION_INFO, WHITE, versionFont);
+    
 	// Load buttons
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
 		SDL_Rect rect = {SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, SCREEN_HEIGHT / 2 - BUTTON_HEIGHT / 2 + i * (BUTTON_HEIGHT + 50), BUTTON_WIDTH, BUTTON_HEIGHT};
-		Button button(rect, PINK, menuFont, ORANGE);
+		Button button(rect, PINK, menuFont, WHITE);
 		button.loadTexture(renderer, menuText[i]);
 
 		buttons.push_back(button);
 	}
-    */
+
 }
 
 void quit(SDL_Window *&window, SDL_Renderer *&renderer)
