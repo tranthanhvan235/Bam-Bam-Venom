@@ -10,6 +10,7 @@
 #include <SDL_mixer.h>
 
 #include "const.h"
+#include "Res.h"
 
 class Game
 {
@@ -17,22 +18,24 @@ public:
     Game();
     ~Game();
 
-    void play(SDL_Renderer *renderer);
-    void menu(SDL_Renderer *renderer);
-    void help(SDL_Renderer *renderer);
-    void lose(SDL_Renderer *renderer);
+    void play();
+    void menu();
+    void help();
+    void lose();
 
     void gameReset();
     void menuReset();
 
-    void handlePlayEvent(SDL_Renderer *renderer, SDL_Event &event);
+    void handlePlayEvent();
 
     void setGameState(const int &state);
-    void manageState(SDL_Renderer *renderer);
+    void manageState();
 
+    static SDL_Event event;
+    static SDL_Renderer *renderer;
 private:
     int gameState;
-
+    
     bool musicState = ON;
     bool soundState = ON;
 
