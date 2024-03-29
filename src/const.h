@@ -37,11 +37,11 @@ const int BUTTON_WIDTH = 150;
 const int BUTTON_HEIGHT = 75;
 
 // Fonts
-const int MENU_SIZE = 45;
+const int MENU_SIZE = 70;
 
 const int TITLE_WIDTH = 500;
 const int TITLE_HEIGHT = 100;
-const int TITLE_SIZE = 250;
+const int TITLE_SIZE = 100;
 
 const int VERSION_POSX = SCREEN_WIDTH - 10;
 const int VERSION_POSY = 10;
@@ -225,5 +225,6 @@ const SDL_Color GREEN = {0, 255, 0, 255};
 const SDL_Color BLUE = {0, 0, 255, 255};
 const SDL_Color ORANGE = {255, 165, 0, 255};
 const SDL_Color PINK = {255, 192, 203, 255};
+const SDL_Color BROWN = {132, 78, 51, 255};
+const SDL_Color SAND = {216, 164, 100, 255};
 const SDL_Color TRANSPARENT = {0, 0, 0, 0};
-
