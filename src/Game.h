@@ -9,9 +9,11 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 
+#include "Texture.h"
 #include "const.h"
 #include "Res.h"
 
+class ColliderComponent;
 class Game
 {
 public:
@@ -25,7 +27,7 @@ public:
     void menu();
     void help();
     void lose();
-    
+
     void quit();
 
     void gameReset();
@@ -38,6 +40,8 @@ public:
 
     static SDL_Event event;
     static SDL_Renderer *renderer;
+    static std::vector<ColliderComponent*> colliders;
+
 private:
     int gameState;
     

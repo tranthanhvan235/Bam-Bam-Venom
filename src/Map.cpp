@@ -1,5 +1,4 @@
 #include "Map.h"
-#include "Texture.h"
 
 int lvl1[20][25];
 Map::Map()

@@ -9,10 +9,10 @@ int random(const int &min, const int &max)
 
 void showLive(SDL_Renderer *renderer)
 {
-	for (int i = 0; i < live; i++)
+	/*for (int i = 0; i < live; i++)
 	{
 		heart.render(renderer, LIVE_POSX + i * LIVE_DISTANCE, LIVE_POSY, LIVE_WIDTH, LIVE_HEIGHT, NULL);
-	}
+	}*/
 }
 
 void showScore(SDL_Renderer *renderer)

@@ -7,6 +7,9 @@
 Manager manager;
 
 auto &snake(manager.addEntity());
+
+std::vector<ColliderComponent *> Game::colliders;
+
 Game::Game()
 {
 	gameState = MENU;
@@ -80,13 +83,13 @@ bool Game::init()
 	}
 
 	return success;
-
 }
 
 void Game::load()
 {
     
 	// Load music
+	{
 	loadMusic(music,"assets/sound/song_suitable_snake.ogg");
 	/*loadSound(clickSound, "assets/sounds/click_sound.wav");
 	loadSound(leaveSound, "assets/sounds/leave_sound.wav");
@@ -95,15 +98,19 @@ void Game::load()
 	loadSound(receiveSound, "assets/sounds/receive_sound.wav");
 	loadSound(wasteSound, "assets/sounds/waste_sound.wav");
 	loadSound(warningSound, "assets/sounds/warning_sound.wav");*/
+	}
 
 	// Load font
+	{
 	loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
 	loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
 	loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
 	/*loadFont(scoreFont, "assets/fonts/version.ttf", SCORE_SIZE);
 	loadFont(highestScoreFont, "assets/fonts/version.ttf", HIGHEST_SCORE_SIZE);*/
+	}
 
 	// Load images
+	{
 	loadImage(renderer, background, "assets/background/background.png");
 	//loadImage(renderer, helpground, "assets/images/helpground.png");
 	//loadImage(renderer, musicOn, "assets/icons/musicOn.png");
@@ -137,6 +144,7 @@ void Game::load()
 
 	loadImage(renderer, talkBubble, "assets/images/customer/talk_bubble.png");
 */
+    }
 	// Load texts
 	title.loadFromRenderedText(renderer, WINDOW_TITLE, WHITE, titleFont);
 	version.loadFromRenderedText(renderer, VERSION_INFO, WHITE, versionFont);
@@ -145,11 +153,18 @@ void Game::load()
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
 		SDL_Rect rect = {SCREEN_WIDTH / 2 - BUTTON_WIDTH / 2, SCREEN_HEIGHT / 2 - BUTTON_HEIGHT / 2 + i * (BUTTON_HEIGHT + 50), BUTTON_WIDTH, BUTTON_HEIGHT};
-		Button button(rect, PINK, menuFont, WHITE);
+		Button button(rect, BROWN, menuFont, WHITE);
 		button.loadTexture(renderer, menuText[i]);
 
 		buttons.push_back(button);
 	}
+
+    // add game character
+	snake.addComponent<TransformComponent>(2);
+	snake.addComponent<SpriteComponent>("assets/character/greenSnake.png");
+	snake.addComponent<KeyboardController>();
+	snake.addComponent<ColliderComponent>("snake");
+
 
 }
 
@@ -231,6 +246,8 @@ void Game::play()
 
 			handlePlayEvent();
 		}
+		manager.refresh();
+        manager.update();
 
 		// Clear screen
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -238,6 +255,7 @@ void Game::play()
 
 		// Render
 		gameground.render(renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		manager.draw();
 
 		// Update screen
 		SDL_RenderPresent(renderer);
