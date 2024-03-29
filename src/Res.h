@@ -27,9 +27,7 @@ extern SDL_Rect soundRect;
 extern Button musicButton;
 extern Button soundButton;
 
-
-bool init(SDL_Window *&window, SDL_Renderer *&renderer);
-
-void load(SDL_Renderer *&renderer);
-
-void quit(SDL_Window *&window, SDL_Renderer *&renderer);
+void loadFont(TTF_Font *&font, const char *path, const int &size);
+void loadImage(SDL_Renderer *renderer, Texture &texture, const char *path);
+void loadMusic(Mix_Music *&music, const char *path);
+void loadSound(Mix_Chunk *&sound, const char *path);
