@@ -18,10 +18,15 @@ public:
     Game();
     ~Game();
 
+    bool init();
+    void load();
+
     void play();
     void menu();
     void help();
     void lose();
+    
+    void quit();
 
     void gameReset();
     void menuReset();
@@ -40,4 +45,5 @@ private:
     bool soundState = ON;
 
     bool loop = true;
+    SDL_Window *window;
 };
