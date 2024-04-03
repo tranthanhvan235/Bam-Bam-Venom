@@ -18,7 +18,7 @@ Texture::~Texture()
 	free();
 }
 
-bool Texture::loadFromFile(SDL_Renderer *renderer, std::string path)
+bool Texture::loadFromFile(std::string path)
 {
 	// Get rid of preexisting texture
 	free();
@@ -38,7 +38,7 @@ bool Texture::loadFromFile(SDL_Renderer *renderer, std::string path)
 		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
 
 		// Create texture from surface pixels
-		newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+		newTexture = SDL_CreateTextureFromSurface(Game::renderer, loadedSurface);
 		if (newTexture == NULL)
 		{
 			std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
@@ -59,7 +59,7 @@ bool Texture::loadFromFile(SDL_Renderer *renderer, std::string path)
 	return texture != NULL;
 }
 
-bool Texture::loadFromRenderedText(SDL_Renderer *renderer, std::string textureText, SDL_Color textColor, TTF_Font *textFont)
+bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font *textFont)
 {
 	// Get rid of preexisting texture
 	free();
@@ -73,7 +73,7 @@ bool Texture::loadFromRenderedText(SDL_Renderer *renderer, std::string textureTe
 	else
 	{
 		// Create texture from surface pixels
-		texture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		texture = SDL_CreateTextureFromSurface(Game::renderer, textSurface);
 		if (texture == NULL)
 		{
 			std::cout << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
@@ -93,7 +93,7 @@ bool Texture::loadFromRenderedText(SDL_Renderer *renderer, std::string textureTe
 	return texture != NULL;
 }
 
-bool Texture::loadString(SDL_Renderer *renderer, std::string path, std::string str, TTF_Font *textFont)
+bool Texture::loadString(std::string path, std::string str, TTF_Font *textFont)
 {
 	bool success = true;
 
@@ -108,7 +108,7 @@ bool Texture::loadString(SDL_Renderer *renderer, std::string path, std::string s
 	{
 		// Render text
 		SDL_Color textColor = {0, 0, 0};
-		if (!loadFromRenderedText(renderer, str, textColor, textFont))
+		if (!loadFromRenderedText(str, textColor, textFont))
 		{
 			std::cout << "Unable to render text texture! SDL_ttf Error: " << TTF_GetError() << std::endl;
 			success = false;
@@ -137,20 +137,23 @@ void Texture::setColor(Uint8 red, Uint8 green, Uint8 blue)
 	SDL_SetTextureColorMod(texture, red, green, blue);
 }
 
-void Texture::render(SDL_Renderer *renderer, int x, int y, int width, int height, SDL_Rect *clip, double angle, SDL_Point *center, SDL_RendererFlip flip)
+void Texture::render(int x, int y, int width, int height, SDL_Rect *clip, double angle, SDL_Point *center, SDL_RendererFlip flip)
 {
 	// Set rendering space and render to screen
 	SDL_Rect renderQuad = {x, y, width, height};
 
 	// Set clip rendering dimensions
-	if (clip != NULL)
-	{
-		renderQuad.w = clip->w;
-		renderQuad.h = clip->h;
-	}
+	// if (clip != NULL)
+	// {
+	// 	renderQuad.w = clip->w;
+	// 	renderQuad.h = clip->h;
+	// }
 
 	// Render to screen
-	SDL_RenderCopyEx(renderer, texture, clip, &renderQuad, angle, center, flip);
+	if(SDL_RenderCopyEx(Game::renderer, texture, clip, &renderQuad, angle, center, flip)!= 0)
+	{
+		std::cout << "! SDL Error: " << SDL_GetError() << std::endl;
+	}
 }
 
 int Texture::getWidth()
@@ -161,19 +164,4 @@ int Texture::getWidth()
 int Texture::getHeight()
 {
 	return height;
-}
-
-SDL_Texture *Texture::LoadTexture(const char *texture)
-{
-    SDL_Surface *tempSurface = IMG_Load(texture);
-    SDL_Texture *tex = SDL_CreateTextureFromSurface(Game::renderer, tempSurface);
-    SDL_FreeSurface(tempSurface);
-    if (tex == NULL)
-        std::cout << texture << std::endl;
-    return tex;
-}
-
-void Texture::Draw(SDL_Texture *tex, SDL_Rect src, SDL_Rect dest)
-{
-    SDL_RenderCopy(Game::renderer, tex, &src, &dest);
 }

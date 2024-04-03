@@ -16,12 +16,12 @@ public:
 	~Texture();
 
     // Loads image at specified path
-	bool loadFromFile(SDL_Renderer *renderer, std::string path);
+	bool loadFromFile(std::string path);
 
     // Creates image from font string
-	bool loadFromRenderedText(SDL_Renderer *renderer, std::string textureText, SDL_Color textColor, TTF_Font *textFont);
+	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font *textFont);
 
-	bool loadString(SDL_Renderer *renderer, std::string path, std::string str, TTF_Font *textFont);
+	bool loadString(std::string path, std::string str, TTF_Font *textFont);
 
     // Deallocates texture
 	void free();
@@ -30,14 +30,11 @@ public:
 	void setColor(Uint8 red, Uint8 green, Uint8 blue);
 
 	// Renders texture at given point
-	void render(SDL_Renderer *renderer, int x, int y, int width, int height, SDL_Rect *clip, double angle = 0.0, SDL_Point *center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	void render(int x, int y, int width, int height, SDL_Rect *clip, double angle = 0.0, SDL_Point *center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	// Gets image dimensions
 	int getWidth();
 	int getHeight();
-
-    static SDL_Texture *LoadTexture(const char *fileName);
-    static void Draw(SDL_Texture *tex, SDL_Rect src, SDL_Rect dest);
 
 private:
     // The actual hardware texture
