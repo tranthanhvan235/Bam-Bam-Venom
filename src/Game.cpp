@@ -5,10 +5,10 @@
 #include "Collision.h"
 
 Manager manager;
-
-auto &snake(manager.addEntity());
-
 std::vector<ColliderComponent *> Game::colliders;
+double cnt = 0;
+SDL_Rect snakeClips[8];
+bool renderSnake = false;
 
 Game::Game()
 {
@@ -21,15 +21,15 @@ Game::~Game()
 
 bool Game::init()
 {
-    // Initialization flag
+	// Initialization flag
 	bool success = true;
-    // Initialize SDL
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		std::cout << "SDL could not initialize! SDL Error: " << SDL_GetError() << std::endl;
 		success = false;
 	}
-    else
+	else
 	{
 		// Set texture filtering to linear
 		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
@@ -75,7 +75,7 @@ bool Game::init()
 		}
 	}
 
-    // Initialise SDL_mixer
+	// Initialise SDL_mixer
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
 		std::cout << "SDL_mixer could not initialise! Error: " << Mix_GetError() << std::endl;
@@ -87,68 +87,70 @@ bool Game::init()
 
 void Game::load()
 {
-    
+
 	// Load music
 	{
-	loadMusic(music,"assets/sound/song_suitable_snake.ogg");
-	/*loadSound(clickSound, "assets/sounds/click_sound.wav");
-	loadSound(leaveSound, "assets/sounds/leave_sound.wav");
-	loadSound(levelSound, "assets/sounds/level_sound.wav");
-	loadSound(loseSound, "assets/sounds/lose_sound.wav");
-	loadSound(receiveSound, "assets/sounds/receive_sound.wav");
-	loadSound(wasteSound, "assets/sounds/waste_sound.wav");
-	loadSound(warningSound, "assets/sounds/warning_sound.wav");*/
+		loadMusic(music, "assets/sound/song_suitable_snake.ogg");
+		/*loadSound(clickSound, "assets/sounds/click_sound.wav");
+		loadSound(leaveSound, "assets/sounds/leave_sound.wav");
+		loadSound(levelSound, "assets/sounds/level_sound.wav");
+		loadSound(loseSound, "assets/sounds/lose_sound.wav");
+		loadSound(receiveSound, "assets/sounds/receive_sound.wav");
+		loadSound(wasteSound, "assets/sounds/waste_sound.wav");
+		loadSound(warningSound, "assets/sounds/warning_sound.wav");*/
 	}
 
 	// Load font
 	{
-	loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
-	loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
-	loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
-	/*loadFont(scoreFont, "assets/fonts/version.ttf", SCORE_SIZE);
-	loadFont(highestScoreFont, "assets/fonts/version.ttf", HIGHEST_SCORE_SIZE);*/
+		loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
+		loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
+		loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
+		/*loadFont(scoreFont, "assets/fonts/version.ttf", SCORE_SIZE);
+		loadFont(highestScoreFont, "assets/fonts/version.ttf", HIGHEST_SCORE_SIZE);*/
 	}
 
 	// Load images
 	{
-	loadImage(renderer, background, "assets/background/background.png");
-	//loadImage(renderer, helpground, "assets/images/helpground.png");
-	//loadImage(renderer, musicOn, "assets/icons/musicOn.png");
-	loadImage(renderer, musicOn, "assets/button/Regular_03.png");
-	//loadImage(renderer, musicOff, "assets/icons/musicOff.png");
-	loadImage(renderer, musicOff, "assets/button/Disable_03.png");
-	loadImage(renderer, gameground, "assets/background/candyBackground.png");
-	//loadImage(renderer, stand, "assets/images/stand.png");
-	//loadImage(renderer, loseground, "assets/images/loseground.png");
-	//loadImage(renderer, heart, "assets/images/heart.png");
-	/*
-	customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
-	customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
-	customerStand.loadFromFile(renderer, "assets/images/seller/sellerStand.png");
+		loadImage(renderer, background, "assets/background/background.png");
+		// loadImage(renderer, helpground, "assets/images/helpground.png");
+		// loadImage(renderer, musicOn, "assets/icons/musicOn.png");
+		loadImage(renderer, musicOn, "assets/button/Regular_03.png");
+		// loadImage(renderer, musicOff, "assets/icons/musicOff.png");
+		loadImage(renderer, musicOff, "assets/button/Disable_03.png");
+		loadImage(renderer, gameground, "assets/background/gameground.png");
+		loadImage(renderer, groundFruit, "assets/background/groundFruit.png");
+		loadImage(renderer, snake, "assets/character/1x/snake_done.png");
+		// loadImage(renderer, stand, "assets/images/stand.png");
+		// loadImage(renderer, loseground, "assets/images/loseground.png");
+		// loadImage(renderer, heart, "assets/images/heart.png");
+		/*
+		customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
+		customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
+		customerStand.loadFromFile(renderer, "assets/images/seller/sellerStand.png");
 
-	loadImage(renderer, up_bread, "assets/images/ingredients/up_bread.png");
-	loadImage(renderer, lettuce, "assets/images/ingredients/lettuce.png");
-	loadImage(renderer, beef, "assets/images/ingredients/beef.png");
-	loadImage(renderer, tomato, "assets/images/ingredients/tomato.png");
-	loadImage(renderer, down_bread, "assets/images/ingredients/down_bread.png");
+		loadImage(renderer, up_bread, "assets/images/ingredients/up_bread.png");
+		loadImage(renderer, lettuce, "assets/images/ingredients/lettuce.png");
+		loadImage(renderer, beef, "assets/images/ingredients/beef.png");
+		loadImage(renderer, tomato, "assets/images/ingredients/tomato.png");
+		loadImage(renderer, down_bread, "assets/images/ingredients/down_bread.png");
 
-	loadImage(renderer, fox, "assets/images/customer/fox.png");
-	loadImage(renderer, wolf, "assets/images/customer/wolf.png");
-	for (int i = 0; i < CUSTOMER_MOTION_RECTANGLE; i++)
-	{
-		customerRect[i].x = i * 152;
-		customerRect[i].y = 0;
-		customerRect[i].w = 134;
-		customerRect[i].h = 134;
+		loadImage(renderer, fox, "assets/images/customer/fox.png");
+		loadImage(renderer, wolf, "assets/images/customer/wolf.png");
+		for (int i = 0; i < CUSTOMER_MOTION_RECTANGLE; i++)
+		{
+			customerRect[i].x = i * 152;
+			customerRect[i].y = 0;
+			customerRect[i].w = 134;
+			customerRect[i].h = 134;
+		}
+
+		loadImage(renderer, talkBubble, "assets/images/customer/talk_bubble.png");
+	*/
 	}
-
-	loadImage(renderer, talkBubble, "assets/images/customer/talk_bubble.png");
-*/
-    }
 	// Load texts
-	title.loadFromRenderedText(renderer, WINDOW_TITLE, WHITE, titleFont);
-	version.loadFromRenderedText(renderer, VERSION_INFO, WHITE, versionFont);
-    
+	title.loadFromRenderedText(WINDOW_TITLE, WHITE, titleFont);
+	version.loadFromRenderedText(VERSION_INFO, WHITE, versionFont);
+
 	// Load buttons
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
@@ -159,15 +161,10 @@ void Game::load()
 		buttons.push_back(button);
 	}
 
-    // add game character
-	snake.addComponent<TransformComponent>(2);
-	snake.addComponent<SpriteComponent>("assets/character/greenSnake.png");
-	snake.addComponent<KeyboardController>();
-	snake.addComponent<ColliderComponent>("snake");
-
-
+	for (int i = 0; i < 5; i++)
+		snakeClips[i] = {i * 1600, 0, 1600, 1600};
+		
 }
-
 
 void Game::setGameState(const int &state)
 {
@@ -182,28 +179,21 @@ void Game::gameReset()
 
 	live = START_LIVE;
 
+	manager.refresh();
+
 	/*...*/
 }
 
 void Game::handlePlayEvent()
 {
-	SDL_PollEvent(&event);
+	// SDL_PollEvent(&event);
 
 	if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
 	{
 		switch (event.key.keysym.sym)
 		{
-		case SDLK_UP:
-
-			break;
-		case SDLK_DOWN:
-
-			break;
-		case SDLK_LEFT:
-
-			break;
-		case SDLK_RIGHT:
-
+		case SDLK_SPACE:
+			renderSnake = true; cnt = 0;
 			break;
 		}
 	}
@@ -211,16 +201,13 @@ void Game::handlePlayEvent()
 	{
 		switch (event.key.keysym.sym)
 		{
-		case SDLK_UP:
-			break;
-		case SDLK_DOWN:
-			break;
-		case SDLK_LEFT:
-			break;
-		case SDLK_RIGHT:
+		case SDLK_SPACE:
+			renderSnake = true; cnt = 0;
 			break;
 		}
 	}
+	// manager.update();
+	// manager.draw();
 }
 
 void Game::play()
@@ -228,8 +215,14 @@ void Game::play()
 	Uint32 frameStart, frameTime;
 
 	gameReset();
+	int posGx = 0;
 
 	bool quit = false;
+	// Angle of rotation
+	double degrees = 0;
+
+	// Flip type
+	SDL_RendererFlip flipType = SDL_FLIP_NONE;
 	while (!quit)
 	{
 		frameStart = SDL_GetTicks();
@@ -242,21 +235,54 @@ void Game::play()
 			case SDL_QUIT:
 				gameState = QUIT;
 				break;
-			}
+			/*case SDL_KEYDOWN:
+				 switch( event.key.keysym.sym )
+                        {
+							case SDLK_SPACE:
+							    renderSnake = true;
+								break;
+                            /*case SDLK_a:
+                            degrees -= 60;
+                            break;
+                            
+                            case SDLK_d:
+                            degrees += 60;
+                            break;
 
+                            case SDLK_q:
+                            flipType = SDL_FLIP_HORIZONTAL;
+                            break;
+
+                            case SDLK_w:
+                            flipType = SDL_FLIP_NONE;
+                            break;
+
+                            case SDLK_e:
+                            flipType = SDL_FLIP_VERTICAL;
+                            break;
+                        }*/
+			}
 			handlePlayEvent();
 		}
-		manager.refresh();
-        manager.update();
 
 		// Clear screen
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 		SDL_RenderClear(renderer);
 
 		// Render
-		gameground.render(renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-		manager.draw();
-
+		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		groundFruit.render(posGx, 555, 289*1.5, 112*1.5, NULL);
+		//snake.render(SCREEN_WIDTH - 500, 220, 567, 422, NULL, degrees, NULL, flipType);
+		int id;
+		if (renderSnake)
+		{
+			id = (int) cnt/5;
+		}
+		else id = 0;
+		SDL_Rect *currentClip = &snakeClips[id];
+	    snake.render(SCREEN_WIDTH - 220*1.5, SCREEN_HEIGHT - 350*1.5, 250*1.5, 250*1.5, currentClip, NULL);
+	
+		std::cout << "Successful render snake " << cnt << '\n';
 		// Update screen
 		SDL_RenderPresent(renderer);
 
@@ -266,6 +292,16 @@ void Game::play()
 		{
 			SDL_Delay(DELAY_TIME - frameTime);
 		}
+
+		posGx += 5;
+		cnt += 0.8;
+		if (cnt >= 25)
+			{
+				cnt = 0;
+				renderSnake = false;
+			}
+		if (posGx >= SCREEN_WIDTH)
+			posGx = 0;
 
 		// Change state
 		if (live == 0)
@@ -397,26 +433,33 @@ void Game::menu()
 		SDL_RenderClear(renderer);
 
 		// Render
-		background.render(renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		background.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
 		if (musicState == ON)
-			musicOn.render(renderer, MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
+			musicOn.render(MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
 		else
-			musicOff.render(renderer, MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
+			musicOff.render(MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
 
 		if (soundState == ON)
-			soundOn.render(renderer, SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
+			soundOn.render(SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
 		else
-			soundOff.render(renderer, SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
+			soundOff.render(SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
 
-		title.render(renderer, SCREEN_WIDTH / 2 - title.getWidth() / 2, SCREEN_HEIGHT / 2 - title.getHeight() / 2 - 200, title.getWidth(), title.getHeight(), NULL);
+		title.render(SCREEN_WIDTH / 2 - title.getWidth() / 2, SCREEN_HEIGHT / 2 - title.getHeight() / 2 - 200, title.getWidth(), title.getHeight(), NULL);
 
-		version.render(renderer, SCREEN_WIDTH - version.getWidth() - 10, 10, version.getWidth(), version.getHeight(), NULL);
+		version.render(SCREEN_WIDTH - version.getWidth() - 10, 10, version.getWidth(), version.getHeight(), NULL);
 
 		for (int i = 0; i < NUM_BUTTONS; i++)
 		{
 			buttons[i].render(renderer);
 		}
+		
+		SDL_Rect *currentClip = &snakeClips[(int)cnt / 5];
+		std::cout << (int)cnt / 5 << '\n';
+	    snake.render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, currentClip, NULL);
+		cnt += 0.5;
+		if (cnt >= 25)
+			cnt = 0;
 
 		// Update screen
 		SDL_RenderPresent(renderer);
@@ -572,7 +615,7 @@ void Game::manageState()
 
 void Game::quit()
 {
-    // Destroy window
+	// Destroy window
 	SDL_DestroyWindow(window);
 	window = nullptr;
 
