@@ -14,7 +14,8 @@ extern TTF_Font *menuFont,									 // Menu font
 	*titleFont, *versionFont, *scoreFont, *highestScoreFont; // Title font
 
 extern Texture title, version; // Title texture
-extern Texture background, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
+extern Texture background, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart, groundFruit; // Background texture
+extern Texture snake, snakeCute[51];
 
 extern Mix_Music *music;
 extern Mix_Chunk *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound

@@ -6,7 +6,7 @@
 
 Manager manager;
 std::vector<ColliderComponent *> Game::colliders;
-double cnt = 0;
+double cnt = 0, id = 0;
 SDL_Rect snakeClips[8];
 bool renderSnake = false;
 
@@ -120,6 +120,29 @@ void Game::load()
 		loadImage(renderer, gameground, "assets/background/gameground.png");
 		loadImage(renderer, groundFruit, "assets/background/groundFruit.png");
 		loadImage(renderer, snake, "assets/character/1x/snake_done.png");
+		for(int i = 0; i < 48; i++)
+		{
+			const char *head = "assets/snake animation(no bg)/snake(";
+			const char *tail = ").png";
+			char *path = new char[strlen(head) + strlen(tail) + 2];
+			std::string num = "";
+			if(i < 10) {
+				num = "0";
+				num = num + char(i + '0');
+			}
+			else {
+				int x = i;
+				num = num +  char(x%10 + '0');
+				x/=10;
+				num = char(x%10 + '0') + num;
+			}
+			const char* id = num.c_str();
+			std::cout << id << '\n';
+			strcpy(path, head);
+			strcat(path, id);
+			strcat(path, tail);
+		 	loadImage(renderer, snakeCute[i], path);
+		}
 		// loadImage(renderer, stand, "assets/images/stand.png");
 		// loadImage(renderer, loseground, "assets/images/loseground.png");
 		// loadImage(renderer, heart, "assets/images/heart.png");
@@ -332,7 +355,7 @@ void Game::menu()
 
 	musicState = ON;
 	menuReset();
-
+	double id = 0;
 	bool quit = false;
 	while (!quit)
 	{
@@ -454,13 +477,10 @@ void Game::menu()
 			buttons[i].render(renderer);
 		}
 		
-		SDL_Rect *currentClip = &snakeClips[(int)cnt / 5];
-		std::cout << (int)cnt / 5 << '\n';
-	    snake.render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, currentClip, NULL);
-		cnt += 0.5;
-		if (cnt >= 25)
-			cnt = 0;
-
+	    snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
+		
+		id += 0.3;
+		if(id > 47) id = 0;
 		// Update screen
 		SDL_RenderPresent(renderer);
 
