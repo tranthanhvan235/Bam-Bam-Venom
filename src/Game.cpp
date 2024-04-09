@@ -3,11 +3,11 @@
 #include "ECS/Components.h"
 #include "Vector2D.h"
 #include "Collision.h"
+#include "Snake.h"
 
 Manager manager;
 std::vector<ColliderComponent *> Game::colliders;
 double cnt = 0, id = 0;
-SDL_Rect snakeClips[8];
 bool renderSnake = false;
 
 Game::Game()
@@ -111,15 +111,14 @@ void Game::load()
 
 	// Load images
 	{
-		loadImage(renderer, background, "assets/background/background.png");
+		loadImage(background, "assets/background/background.png");
 		// loadImage(renderer, helpground, "assets/images/helpground.png");
-		// loadImage(renderer, musicOn, "assets/icons/musicOn.png");
-		loadImage(renderer, musicOn, "assets/button/Regular_03.png");
-		// loadImage(renderer, musicOff, "assets/icons/musicOff.png");
-		loadImage(renderer, musicOff, "assets/button/Disable_03.png");
-		loadImage(renderer, gameground, "assets/background/gameground.png");
-		loadImage(renderer, groundFruit, "assets/background/groundFruit.png");
-		loadImage(renderer, snake, "assets/character/1x/snake_done.png");
+		loadImage(soundOn, "assets/menu/soundOn.png");
+		loadImage(musicOn, "assets/menu/musicOn.png");
+		loadImage(soundOff, "assets/menu/soundOff.png");
+		loadImage(musicOff, "assets/menu/musicOff.png");
+		loadImage(gameground, "assets/background/gameground.png");
+		loadImage(groundFruit, "assets/background/groundFruit.png");
 		for(int i = 0; i < 48; i++)
 		{
 			const char *head = "assets/snake animation(no bg)/snake(";
@@ -141,7 +140,7 @@ void Game::load()
 			strcpy(path, head);
 			strcat(path, id);
 			strcat(path, tail);
-		 	loadImage(renderer, snakeCute[i], path);
+		 	loadImage(snakeCute[i], path);
 		}
 		// loadImage(renderer, stand, "assets/images/stand.png");
 		// loadImage(renderer, loseground, "assets/images/loseground.png");
@@ -150,13 +149,9 @@ void Game::load()
 		customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
 		customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
 		customerStand.loadFromFile(renderer, "assets/images/seller/sellerStand.png");
+        */
 
-		loadImage(renderer, up_bread, "assets/images/ingredients/up_bread.png");
-		loadImage(renderer, lettuce, "assets/images/ingredients/lettuce.png");
-		loadImage(renderer, beef, "assets/images/ingredients/beef.png");
-		loadImage(renderer, tomato, "assets/images/ingredients/tomato.png");
-		loadImage(renderer, down_bread, "assets/images/ingredients/down_bread.png");
-
+		/*
 		loadImage(renderer, fox, "assets/images/customer/fox.png");
 		loadImage(renderer, wolf, "assets/images/customer/wolf.png");
 		for (int i = 0; i < CUSTOMER_MOTION_RECTANGLE; i++)
@@ -183,9 +178,6 @@ void Game::load()
 
 		buttons.push_back(button);
 	}
-
-	for (int i = 0; i < 5; i++)
-		snakeClips[i] = {i * 1600, 0, 1600, 1600};
 		
 }
 
@@ -229,6 +221,7 @@ void Game::handlePlayEvent()
 			break;
 		}
 	}
+	
 	// manager.update();
 	// manager.draw();
 }
@@ -238,6 +231,9 @@ void Game::play()
 	Uint32 frameStart, frameTime;
 
 	gameReset();
+	Fruit fruit;
+	Snake snake;
+
 	int posGx = 0;
 
 	bool quit = false;
@@ -296,16 +292,12 @@ void Game::play()
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		groundFruit.render(posGx, 555, 289*1.5, 112*1.5, NULL);
 		//snake.render(SCREEN_WIDTH - 500, 220, 567, 422, NULL, degrees, NULL, flipType);
-		int id;
-		if (renderSnake)
-		{
-			id = (int) cnt/5;
-		}
-		else id = 0;
-		SDL_Rect *currentClip = &snakeClips[id];
-	    snake.render(SCREEN_WIDTH - 220*1.5, SCREEN_HEIGHT - 350*1.5, 250*1.5, 250*1.5, currentClip, NULL);
-	
-		std::cout << "Successful render snake " << cnt << '\n';
+		
+	    
+		fruit.generate(2);
+		///snake.fruit[1].generate(3);
+		snake.render();
+		//std::cout << "Successful render snake " << cnt << '\n';
 		// Update screen
 		SDL_RenderPresent(renderer);
 
@@ -317,7 +309,7 @@ void Game::play()
 		}
 
 		posGx += 5;
-		cnt += 0.8;
+		cnt += 2;
 		if (cnt >= 25)
 			{
 				cnt = 0;
@@ -479,7 +471,7 @@ void Game::menu()
 		
 	    snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
 		
-		id += 0.3;
+		id += 0.2;
 		if(id > 47) id = 0;
 		// Update screen
 		SDL_RenderPresent(renderer);
