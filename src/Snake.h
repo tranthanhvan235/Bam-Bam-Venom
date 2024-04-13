@@ -9,17 +9,18 @@ public:
     Snake();
     ~Snake();
 
-    int SNAKEWIDTH = 250, SNAKEHEIGHT = 250;
+    int SNAKEWIDTH = 250 * 1.5, SNAKEHEIGHT = 250*1.5;
 
     void handleEventSnake(SDL_Event &e);
     void updateGame();
 
-    void checkCollision();
+    bool checkCollision(int i);
     
-    void render();
+    void render(int i);
 
+    bool isRender = 0;
     //Current position
-    int sPosX, sPosY;
+    int sPosX = SCREEN_WIDTH - 220*1.5, sPosY = SCREEN_HEIGHT - 350*1.5;
 
     //Velocity
     int sVelX, sVelY;
@@ -35,5 +36,5 @@ public:
     Timer time;
     Timer timer;
 
-    Fruit fruit[NUM_FRUIT];
+    Fruit fruit;
 };

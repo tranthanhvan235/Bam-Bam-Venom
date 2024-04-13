@@ -5,8 +5,8 @@
 #include "Collision.h"
 #include "Snake.h"
 
-Manager manager;
-std::vector<ColliderComponent *> Game::colliders;
+//Manager manager;
+//std::vector<ColliderComponent *> Game::colliders;
 double cnt = 0, id = 0;
 bool renderSnake = false;
 
@@ -119,28 +119,30 @@ void Game::load()
 		loadImage(musicOff, "assets/menu/musicOff.png");
 		loadImage(gameground, "assets/background/gameground.png");
 		loadImage(groundFruit, "assets/background/groundFruit.png");
-		for(int i = 0; i < 48; i++)
+		for (int i = 0; i < 48; i++)
 		{
 			const char *head = "assets/snake animation(no bg)/snake(";
 			const char *tail = ").png";
 			char *path = new char[strlen(head) + strlen(tail) + 2];
 			std::string num = "";
-			if(i < 10) {
+			if (i < 10)
+			{
 				num = "0";
 				num = num + char(i + '0');
 			}
-			else {
+			else
+			{
 				int x = i;
-				num = num +  char(x%10 + '0');
-				x/=10;
-				num = char(x%10 + '0') + num;
+				num = num + char(x % 10 + '0');
+				x /= 10;
+				num = char(x % 10 + '0') + num;
 			}
-			const char* id = num.c_str();
+			const char *id = num.c_str();
 			std::cout << id << '\n';
 			strcpy(path, head);
 			strcat(path, id);
 			strcat(path, tail);
-		 	loadImage(snakeCute[i], path);
+			loadImage(snakeCute[i], path);
 		}
 		// loadImage(renderer, stand, "assets/images/stand.png");
 		// loadImage(renderer, loseground, "assets/images/loseground.png");
@@ -149,7 +151,7 @@ void Game::load()
 		customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
 		customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
 		customerStand.loadFromFile(renderer, "assets/images/seller/sellerStand.png");
-        */
+		*/
 
 		/*
 		loadImage(renderer, fox, "assets/images/customer/fox.png");
@@ -178,7 +180,6 @@ void Game::load()
 
 		buttons.push_back(button);
 	}
-		
 }
 
 void Game::setGameState(const int &state)
@@ -194,7 +195,7 @@ void Game::gameReset()
 
 	live = START_LIVE;
 
-	manager.refresh();
+	// manager.refresh();
 
 	/*...*/
 }
@@ -208,7 +209,8 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			renderSnake = true; cnt = 0;
+			renderSnake = !renderSnake;
+			cnt = 0;
 			break;
 		}
 	}
@@ -217,13 +219,11 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			renderSnake = true; cnt = 0;
+			renderSnake = !renderSnake;
+			cnt = 0;
 			break;
 		}
 	}
-	
-	// manager.update();
-	// manager.draw();
 }
 
 void Game::play()
@@ -237,11 +237,7 @@ void Game::play()
 	int posGx = 0;
 
 	bool quit = false;
-	// Angle of rotation
-	double degrees = 0;
-
-	// Flip type
-	SDL_RendererFlip flipType = SDL_FLIP_NONE;
+	int id = 1;
 	while (!quit)
 	{
 		frameStart = SDL_GetTicks();
@@ -254,34 +250,9 @@ void Game::play()
 			case SDL_QUIT:
 				gameState = QUIT;
 				break;
-			/*case SDL_KEYDOWN:
-				 switch( event.key.keysym.sym )
-                        {
-							case SDLK_SPACE:
-							    renderSnake = true;
-								break;
-                            /*case SDLK_a:
-                            degrees -= 60;
-                            break;
-                            
-                            case SDLK_d:
-                            degrees += 60;
-                            break;
-
-                            case SDLK_q:
-                            flipType = SDL_FLIP_HORIZONTAL;
-                            break;
-
-                            case SDLK_w:
-                            flipType = SDL_FLIP_NONE;
-                            break;
-
-                            case SDLK_e:
-                            flipType = SDL_FLIP_VERTICAL;
-                            break;
-                        }*/
 			}
 			handlePlayEvent();
+			
 		}
 
 		// Clear screen
@@ -290,15 +261,15 @@ void Game::play()
 
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-		groundFruit.render(posGx, 555, 289*1.5, 112*1.5, NULL);
-		//snake.render(SCREEN_WIDTH - 500, 220, 567, 422, NULL, degrees, NULL, flipType);
+		groundFruit.render(posGx, 555, 289 * 1.5, 112 * 1.5, NULL);
 		
-	    
-		fruit.generate(2);
-		///snake.fruit[1].generate(3);
-		snake.render();
-		//std::cout << "Successful render snake " << cnt << '\n';
-		// Update screen
+		snake.isRender = renderSnake;
+		if(snake.checkCollision(id)) {
+			id++;
+		}
+		snake.render(id);
+		
+		//  Update screen
 		SDL_RenderPresent(renderer);
 
 		// Frame rate
@@ -311,10 +282,10 @@ void Game::play()
 		posGx += 5;
 		cnt += 2;
 		if (cnt >= 25)
-			{
-				cnt = 0;
-				renderSnake = false;
-			}
+		{
+			cnt = 0;
+			renderSnake = false;
+		}
 		if (posGx >= SCREEN_WIDTH)
 			posGx = 0;
 
@@ -468,11 +439,12 @@ void Game::menu()
 		{
 			buttons[i].render(renderer);
 		}
-		
-	    snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
-		
+
+		snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
+
 		id += 0.2;
-		if(id > 47) id = 0;
+		if (id > 47)
+			id = 0;
 		// Update screen
 		SDL_RenderPresent(renderer);
 

@@ -40,7 +40,7 @@ public:
 
     static SDL_Event event;
     static SDL_Renderer *renderer;
-    static std::vector<ColliderComponent*> colliders;
+    //static std::vector<ColliderComponent*> colliders;
 
 private:
     int gameState;
