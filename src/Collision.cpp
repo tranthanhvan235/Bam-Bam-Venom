@@ -1,30 +1,30 @@
 #include "Collision.h"
-#include "ECS/ColliderComponent.h"
+#include "Game.h"
 
-bool Collision::AABB(const SDL_Rect& recA, const SDL_Rect& recB)
+Collision::Collision()
 {
-    if(
-        recA.x + recA.w >= recB.x &&
-        recB.x + recB.w >= recA.x &&
-        recA.y + recA.h >= recB.y &&
-        recB.y + recB.h >= recA.y
-      )
-    {
-        return true;
-    }
-
-    return false;
 }
-
- bool Collision::AABB(const ColliderComponent& colA, const ColliderComponent& colB)
+Collision::~Collision()
 {
-    if(AABB(colA.collider, colB.collider)) 
-    {
-        std::cout << colA.tag << "hit: " << colB.tag << std::endl;
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
+}
+void Collision::setCollision(double xx, double yy, double ww, double hh)
+{
+    x = xx;
+    y = yy;
+    w = ww;
+    h = hh;
+}
+void Collision::render()
+{
+    SDL_Rect rec;
+    rec = {(int)x, (int) y, (int)w, (int) h};
+    SDL_RenderFillRect(Game::renderer, &rec);
+}
+bool Collision::checkCollision(const Collision &recB)
+{
+    return (
+        x + w >= recB.x &&
+        recB.x + recB.w >= x &&
+        y + h >= recB.y &&
+        recB.y + recB.h >= y);
 }

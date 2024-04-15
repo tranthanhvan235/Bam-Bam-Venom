@@ -1,11 +1,13 @@
 #pragma once
 #include <SDL.h>
 
-class ColliderComponent;
-
 class Collision
 {
 public:
-    static bool AABB(const SDL_Rect& recA, const SDL_Rect& recB);
-    static bool AABB(const ColliderComponent& colA, const ColliderComponent& colB);
+    Collision();
+    ~Collision();
+    double x, y, w, h;
+    void setCollision(double x, double y, double w, double h);
+    bool checkCollision(const Collision& recB);
+    void render();
 };
