@@ -14,11 +14,11 @@ extern TTF_Font *menuFont,									 // Menu font
 	*titleFont, *versionFont, *scoreFont, *highestScoreFont; // Title font
 
 extern Texture title, version; // Title texture
-extern Texture background, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart, groundFruit; // Background texture
-extern Texture snake, snakeCute[51];
+extern Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
+extern Texture snakeCute[51];
 
 extern Mix_Music *music;
-extern Mix_Chunk *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound
+extern Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound
 
 extern const char *menuText[NUM_BUTTONS];// Menu text
 
@@ -29,6 +29,7 @@ extern Button musicButton;
 extern Button soundButton;
 
 void loadFont(TTF_Font *&font, const char *path, const int &size);
-void loadImage(SDL_Renderer *renderer, Texture &texture, const char *path);
+void loadImage(Texture &texture, const char *path);
 void loadMusic(Mix_Music *&music, const char *path);
 void loadSound(Mix_Chunk *&sound, const char *path);
+//bool checkCollisionSnake_Fruit(Snake &snake, Fruit &fruit);

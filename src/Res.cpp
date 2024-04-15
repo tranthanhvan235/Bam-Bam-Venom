@@ -5,11 +5,11 @@ TTF_Font *menuFont,											 // Menu font
 
 
 Texture title, version; // Title texture
-Texture background, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart, groundFruit; // Background texture
-Texture snake, snakeCute[51];
+Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
+Texture snakeCute[51];
 
 Mix_Music *music;
-Mix_Chunk *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound
+Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound
 
 const char *menuText[NUM_BUTTONS] = {"Play", "Help", "Quit"}; // Menu text
 
@@ -28,7 +28,7 @@ void loadFont(TTF_Font *&font, const char *path, const int &size)
 	}
 }
 
-void loadImage(SDL_Renderer *renderer, Texture &texture, const char *path)
+void loadImage(Texture &texture, const char *path)
 {
 	if (!texture.loadFromFile(path))
 	{
