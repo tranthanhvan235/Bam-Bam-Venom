@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Fruit.h"
+#include "board.h"
+#include "Collision.h"
 
 class Snake
 {
@@ -14,27 +16,28 @@ public:
     void handleEventSnake(SDL_Event &e);
     void updateGame();
 
-    bool checkCollision(int i);
+    int checkCollision();
     
-    void render(int i);
+    void render(bool isPaused);
 
-    bool isRender = 0;
+    //Dir
+    bool goingUp = false, goingDown = false;
+
     //Current position
     int sPosX = SCREEN_WIDTH - 220*1.5, sPosY = SCREEN_HEIGHT - 350*1.5;
 
     //Velocity
     int sVelX, sVelY;
 
-    int mouseX,mouseY;
-
-    int frame = 0;
-    int preMouseX, preMouseY;
+    int frame = 0, velFrame = 1;
     
     Texture snake;
-    SDL_Rect snakeClips[8];
-
+    SDL_Rect snakeClips[5];
+    
     Timer time;
     Timer timer;
 
     Fruit fruit;
+    Board board;
+    Collision snakeCol[5];
 };

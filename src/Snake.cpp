@@ -1,56 +1,80 @@
 #include "Snake.h"
+#include "Game.h"
 
 Snake::Snake()
 {
-    updateGame();
+  for (int i = 0; i < 5; i++)
+  {
+    snakeClips[i] = {i * 1600, 0, 1600, 1600};
+    snakeCol[i].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + i * (i - 1) * (i - 2) * 20 + SNAKEHEIGHT / 2, 50, 50);
+    // SDL_RenderDrawPoint(Game::renderer, sPosX + SNAKEWIDTH / 2, sPosY + SNAKEHEIGHT);
+  }
+  snakeCol[0].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2, 50, 50);
+  snakeCol[1].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2 + 20, 50, 50);
+  snakeCol[2].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2 + 50, 50, 50);
+  snakeCol[3].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2 + 80, 50, 50);
+  snakeCol[4].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2 + 130, 50, 50);
+
+  loadImage(snake, "assets/character/1x/snake_done.png");
+  timer.start();
 }
 
 Snake::~Snake()
 {
-
 }
 
-void Snake::handleEventSnake(SDL_Event& e)
+void Snake::handleEventSnake(SDL_Event &e)
 {
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    time.start();
 }
 
 void Snake::updateGame()
 {
-    for (int i = 0; i < 5; i++)
-		snakeClips[i] = {i * 1600, 0, 1600, 1600};
-    loadImage(snake, "assets/character/1x/snake_done.png");
-    timer.start();
 }
 
-bool Snake::checkCollision(int i)
+int Snake::checkCollision()
 {
-    std::cout << sPosX << " " << sPosY << '\n';
-    std::cout << fruit.getPosX(i) << " " << fruit.getPosY(i) << "\n";
-    std::cout << '\n';
-    if (sPosX + SNAKEWIDTH/2 >= fruit.getPosX(i)
-            && fruit.getPosX(i) + fruit.getWidth(i)>= sPosX + SNAKEWIDTH/2
-            && sPosY + SNAKEHEIGHT >=  fruit.getPosY(i)
-            && fruit.getPosY(i) + fruit.getHeight(i) >= sPosY)
+  int i = frame;
+  if(snakeCol[i].checkCollision(fruit.fruitCol)) return 1;
+  if(snakeCol[i].checkCollision(board.boardCol[0]) || snakeCol[i].checkCollision(board.boardCol[1])) return 2;
+  return 0;
+}
+
+void Snake::render(bool isPaused)
+{
+  if (!isPaused)
+  {
+    board.generate();
+    fruit.fruitCol.render();
+    fruit.generate();
+
+    if (frame == 4 && goingDown)
     {
-        std::cout << "Var\n";
-        return true;
+      goingDown = false;
+      goingUp = true;
     }
-    return false;
-}
+    else if (frame == 0 && goingUp)
+    {
+      goingUp = false;
+      goingDown = false;
+    }
 
-void Snake::render(int i)
-{
-    if(!isRender) frame = 0;
-    fruit.generate(i);
-    if(frame == 5) frame = 0;
-    SDL_Rect *currentClip = &snakeClips[4];
-    //std::cout << "Frame" << " " << frame << "\n";
-    //snake.render(SCREEN_WIDTH - 220*1.5, SCREEN_HEIGHT - 350*1.5, 250*1.5, 250*1.5, currentClip, NULL);
-	snake.render(sPosX, sPosY, SNAKEWIDTH, SNAKEHEIGHT, currentClip, NULL);
-    
-    if(timer.get_ticks()%3 == 0) frame++;
-    //std::cout << "Do you call me?/n";
+    if (goingUp)
+      velFrame = -1;
+    else if (goingDown)
+      velFrame = 1;
+    else
+      velFrame = 0;
+
+    if (timer.get_ticks() % 3 == 0)
+      frame += velFrame;
+  }
+  else
+  {
+    board.curRender();
+    fruit.render();
+  }
+  SDL_Rect *currentClip = &snakeClips[frame];
+  // std::cout << frame << '\n';
+  snake.render(sPosX, sPosY, SNAKEWIDTH, SNAKEHEIGHT, currentClip, NULL);
+  snakeCol[frame].render();
 }
