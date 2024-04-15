@@ -4,12 +4,13 @@
 #include "Vector2D.h"
 #include "Collision.h"
 #include "Snake.h"
+#include "board.h"
 
 //Manager manager;
 //std::vector<ColliderComponent *> Game::colliders;
+int MAXWIDTH, MAXHEIGHT;
 double cnt = 0, id = 0;
-bool renderSnake = false;
-
+Snake lastSnake;
 Game::Game()
 {
 	gameState = MENU;
@@ -38,7 +39,9 @@ bool Game::init()
 		}
 
 		// Create window
-		window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN| SDL_WINDOW_RESIZABLE);
+		SDL_GetWindowMaximumSize(window, &MAXWIDTH, &MAXHEIGHT);
+		std::cout << MAXWIDTH << " " << MAXHEIGHT << '\n';
 		if (window == NULL)
 		{
 			std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << std::endl;
@@ -56,7 +59,9 @@ bool Game::init()
 			else
 			{
 				// Initialize renderer color
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+				SDL_SetRenderDrawColor(renderer, 136, 193, 68, 50);
+				SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 				// Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
@@ -91,8 +96,9 @@ void Game::load()
 	// Load music
 	{
 		loadMusic(music, "assets/sound/song_suitable_snake.ogg");
-		/*loadSound(clickSound, "assets/sounds/click_sound.wav");
-		loadSound(leaveSound, "assets/sounds/leave_sound.wav");
+		loadSound(clickSound, "assets/sound/button_push.wav");
+		loadSound(music_soundClick, "assets/sound/sound_musicClick.wav");
+		/*loadSound(leaveSound, "assets/sounds/leave_sound.wav");
 		loadSound(levelSound, "assets/sounds/level_sound.wav");
 		loadSound(loseSound, "assets/sounds/lose_sound.wav");
 		loadSound(receiveSound, "assets/sounds/receive_sound.wav");
@@ -112,13 +118,13 @@ void Game::load()
 	// Load images
 	{
 		loadImage(background, "assets/background/background.png");
+		loadImage(backgroundFull, "assets/background/background.png");
 		// loadImage(renderer, helpground, "assets/images/helpground.png");
 		loadImage(soundOn, "assets/menu/soundOn.png");
 		loadImage(musicOn, "assets/menu/musicOn.png");
 		loadImage(soundOff, "assets/menu/soundOff.png");
 		loadImage(musicOff, "assets/menu/musicOff.png");
 		loadImage(gameground, "assets/background/gameground.png");
-		loadImage(groundFruit, "assets/background/groundFruit.png");
 		for (int i = 0; i < 48; i++)
 		{
 			const char *head = "assets/snake animation(no bg)/snake(";
@@ -138,7 +144,6 @@ void Game::load()
 				num = char(x % 10 + '0') + num;
 			}
 			const char *id = num.c_str();
-			std::cout << id << '\n';
 			strcpy(path, head);
 			strcat(path, id);
 			strcat(path, tail);
@@ -209,7 +214,6 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			renderSnake = !renderSnake;
 			cnt = 0;
 			break;
 		}
@@ -219,7 +223,6 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			renderSnake = !renderSnake;
 			cnt = 0;
 			break;
 		}
@@ -229,12 +232,9 @@ void Game::handlePlayEvent()
 void Game::play()
 {
 	Uint32 frameStart, frameTime;
-
-	gameReset();
-	Fruit fruit;
 	Snake snake;
-
-	int posGx = 0;
+    
+	gameReset();
 
 	bool quit = false;
 	int id = 1;
@@ -251,24 +251,39 @@ void Game::play()
 				gameState = QUIT;
 				break;
 			}
-			handlePlayEvent();
+			if (event.type == SDL_KEYDOWN)
+			{
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_ESCAPE:
+					gameState = MENU;
+					break;
+				case SDLK_p:
+					isPaused = isPaused xor 1;
+					std::cout << isPaused << '\n';
+					break;
+				case SDLK_SPACE:
+				    if(!snake.goingDown && !snake.goingUp)
+					snake.goingDown = true;
+					break;
+				}
+			}
+			//handlePlayEvent();
 			
 		}
 
 		// Clear screen
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+		//SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
 		SDL_RenderClear(renderer);
 
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-		groundFruit.render(posGx, 555, 289 * 1.5, 112 * 1.5, NULL);
-		
-		snake.isRender = renderSnake;
-		if(snake.checkCollision(id)) {
-			id++;
-		}
-		snake.render(id);
-		
+		snake.render(isPaused);
+		if(snake.checkCollision() == 2) gameState = LOSE;
+		else if(snake.checkCollision() == 1) score += 10;
+		showScore(renderer);
+
 		//  Update screen
 		SDL_RenderPresent(renderer);
 
@@ -278,16 +293,6 @@ void Game::play()
 		{
 			SDL_Delay(DELAY_TIME - frameTime);
 		}
-
-		posGx += 5;
-		cnt += 2;
-		if (cnt >= 25)
-		{
-			cnt = 0;
-			renderSnake = false;
-		}
-		if (posGx >= SCREEN_WIDTH)
-			posGx = 0;
 
 		// Change state
 		if (live == 0)
@@ -308,15 +313,14 @@ void Game::menuReset()
 	if (musicState)
 		Mix_PlayMusic(music, -1);
 
-	// if (soundState)
-	//	Mix_Resume(-1);
+	if (soundState)
+		Mix_Resume(-1);
 }
 
 void Game::menu()
 {
 	Uint32 frameStart, frameTime;
 
-	musicState = ON;
 	menuReset();
 	double id = 0;
 	bool quit = false;
@@ -369,6 +373,7 @@ void Game::menu()
 						Mix_PauseMusic();
 						musicState = OFF;
 					}
+					Mix_PlayChannel(-1, music_soundClick, 0);	
 				}
 
 				if (soundButton.isMouseInside(event.motion.x, event.motion.y))
@@ -383,6 +388,7 @@ void Game::menu()
 						Mix_Resume(-1);
 						soundState = ON;
 					}
+					Mix_PlayChannel(-1, music_soundClick, 0);
 				}
 				break;
 
@@ -415,10 +421,11 @@ void Game::menu()
 		}
 
 		// Clear screen
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 136, 193, 68, 50);
 		SDL_RenderClear(renderer);
 
 		// Render
+		//backgroundFull.render(0, 0, 2000, 2000, NULL);
 		background.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
 		if (musicState == ON)
@@ -486,6 +493,7 @@ void Game::help()
 					gameState = MENU;
 					break;
 				case SDLK_SPACE:
+				    isPaused = true;
 					gameState = PLAY;
 					break;
 				}

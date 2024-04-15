@@ -12,6 +12,7 @@
 #include "Texture.h"
 #include "const.h"
 #include "Res.h"
+#include "ultils.h"
 
 class ColliderComponent;
 class Game
@@ -47,6 +48,7 @@ private:
     
     bool musicState = ON;
     bool soundState = ON;
+    bool isPaused = false;
 
     bool loop = true;
     SDL_Window *window;
