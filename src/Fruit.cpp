@@ -5,8 +5,9 @@
 Fruit::Fruit()
 {
     random();
-    velY = 4;
     timer.start();
+    velY = 3;
+    posY = 0;
 }
 
 Fruit::~Fruit()
@@ -58,11 +59,9 @@ void Fruit::random()
         break;
     }
     eaten = 0;
-    posY = 0;
-    posX = -fruit.getWidth();
     fruitCol.setCollision(posX, posY, fruit.getWidth() - 50, fruit.getHeight() - 50);
     frame = 0;
-    velX = 1.5;
+    velX = randVel;
 }
 
 bool Fruit::checkCollision(const Collision &x)
@@ -73,6 +72,7 @@ bool Fruit::checkCollision(const Collision &x)
         score += 10;
 		Mix_PlayChannel(-1, eatSound, 0);
         random();
+        posX = -fruit.getWidth();
         return 1;
     }
     return 0;

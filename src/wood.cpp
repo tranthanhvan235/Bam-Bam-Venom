@@ -37,7 +37,7 @@ void Wood::random(int i)
     posX[i] = 0;
     posY[i] = 610;
     woodCol[i].setCollision(posX[i], posY[i], SIZEW, SIZEW);
-    velX[i] = 1.5;
+    velX[i] = randVel;
 }
 
 bool Wood::checkCollision(const Collision &x)
@@ -71,6 +71,7 @@ void Wood::render()
     if (frame == 5)
         frame = 0;
     SDL_Rect *currentClip = &clips[frame];
+
     for(int i = 0; i < WOODSIZE; i++)
     {
     woodCol[i].setCollision(posX[i], posY[i], SIZEW, SIZEW);
