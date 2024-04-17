@@ -18,7 +18,7 @@ extern Texture background, backgroundFull, helpground, musicOn, soundOn, musicOf
 extern Texture snakeCute[51];
 
 extern Mix_Music *music;
-extern Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *wasteSound, *warningSound, *jumpSound; // Sound
+extern Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *wasteSound, *warningSound, *jumpSound, *fruitDown, *varSound; // Sound
 
 extern const char *menuText[NUM_BUTTONS];// Menu text
 
