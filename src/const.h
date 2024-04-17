@@ -6,6 +6,7 @@ extern int score;
 extern int level;
 extern int live;
 extern int highestScore;
+extern double randVel;
 
 // WINDOWS VARIABLES
 // Screen size

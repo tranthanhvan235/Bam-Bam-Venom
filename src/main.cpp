@@ -7,6 +7,7 @@ int score;
 int level;
 int live;
 int highestScore;
+double randVel;
 
 int main(int argc, char *args[])
 {
