@@ -16,7 +16,19 @@ Snake::Snake()
   snakeCol[4].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2 + 130, 50, 50);
 
   loadImage(snake, "assets/character/1x/snake_done.png");
-  timer.start(); 
+  timer.start();
+  fruitSize = rand() % 10 + 2;
+  for (int i = 0; i < fruitSize; i++)
+  {
+    Fruit *newFruit = new Fruit();
+    if (fruit.size())
+    {
+      newFruit->velY = fruit[fruit.size() - 1]->velY + rand() % 2;
+      newFruit->posX = fruit[fruit.size() - 1]->posX - newFruit->getWidth() - rand() % 20;
+      newFruit->posY = fruit[fruit.size() - 1]->posY - newFruit->getHeight() * i;
+    }
+    fruit.push_back(newFruit);
+  }
 }
 
 Snake::~Snake()
@@ -33,13 +45,20 @@ void Snake::updateGame()
 
 int Snake::checkCollision()
 {
-  if(fruit.checkCollision(snakeCol[frame])) {
-    immortal = 5; 
-    return 1;
-  }
-  if(wood.checkCollision(snakeCol[frame])) {
+  for (int i = 0; i < fruitSize; i++)
+    if (fruit[i]->checkCollision(snakeCol[frame]))
+    {
+      immortal = 5;
+      return 1;
+    }
+  if (wood.checkCollision(snakeCol[frame]))
+  {
     immortal--;
-    if(immortal) return 0;
+    if (immortal)
+      {
+        Mix_PlayChannel(-1, varSound, 0);
+        return 0;
+      }
     return 2;
   }
   return 0;
@@ -50,7 +69,8 @@ void Snake::render(bool isPaused)
   if (!isPaused)
   {
     wood.generate();
-    fruit.generate();
+    for (int i = 0; i < fruitSize; i++)
+      fruit[i]->generate();
 
     if (frame == 4 && goingDown)
     {
@@ -76,9 +96,10 @@ void Snake::render(bool isPaused)
   else
   {
     wood.render();
-    fruit.render();
+    for (int i = 0; i < fruitSize; i++)
+      fruit[i]->render();
   }
-  //std::cout << var << '\n';
+  // std::cout << var << '\n';
   SDL_Rect *currentClip = &snakeClips[frame];
   snake.render(sPosX, sPosY, SNAKEWIDTH, SNAKEHEIGHT, currentClip, NULL);
 }

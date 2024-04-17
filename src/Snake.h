@@ -34,6 +34,7 @@ public:
     int frame = 0, velFrame = 1;
     int immortal = 3;
     int var;
+    int fruitSize;
     
     Texture snake;
     SDL_Rect snakeClips[5];
@@ -41,7 +42,7 @@ public:
     Timer time;
     Timer timer;
 
-    Fruit fruit;
+    std::vector<Fruit*> fruit;
     Wood wood;
     Collision snakeCol[5];
 };

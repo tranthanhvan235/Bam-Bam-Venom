@@ -27,12 +27,12 @@ public:
     Collision getCol();
     bool checkCollision(const Collision &x);
     int eaten = false;
+    double posX, posY;
+    double velX, velY;
 
 private:
     double frame;
     Timer timer;
     Texture fruit; 
-    double posX, posY;
-    double velX, velY;
     Collision fruitCol;
 };
