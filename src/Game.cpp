@@ -4,14 +4,10 @@
 #include "Vector2D.h"
 #include "Snake.h"
 
-//Manager manager;
-//std::vector<ColliderComponent *> Game::colliders;
-int MAXWIDTH, MAXHEIGHT;
-double cnt = 0, id = 0;
-
 Game::Game()
 {
 	gameState = MENU;
+	randVel = rand() % 2 + 1.5;
 }
 Game::~Game()
 {
@@ -38,8 +34,6 @@ bool Game::init()
 
 		// Create window
 		window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN| SDL_WINDOW_RESIZABLE);
-		SDL_GetWindowMaximumSize(window, &MAXWIDTH, &MAXHEIGHT);
-		std::cout << MAXWIDTH << " " << MAXHEIGHT << '\n';
 		if (window == NULL)
 		{
 			std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << std::endl;
@@ -93,13 +87,15 @@ void Game::load()
 
 	// Load music
 	{
-		loadMusic(music, "assets/sound/song.WAV");
+		loadMusic(music, "assets/sound/song.ogg");
 		loadSound(clickSound, "assets/sound/button_push.wav");
 		loadSound(music_soundClick, "assets/sound/sound_musicClick.wav");
 		loadSound(jumpSound, "assets/sound/jump.wav");
+		loadSound(fruitDown, "assets/sound/fruit_down.wav");
 		// loadSound(leaveSound, "assets/sounds/leave_sound.wav");
 		// loadSound(levelSound, "assets/sounds/level_sound.wav");
-		loadSound(loseSound, "assets/sound/lew_lew_lose.wav");
+		loadSound(varSound, "assets/sound/snake_var.wav");
+		loadSound(loseSound, "assets/sound/loseSound.wav");
 		loadSound(eatSound, "assets/sound/gotScore.wav");
 		// loadSound(wasteSound, "assets/sounds/waste_sound.wav");
 		// loadSound(warningSound, "assets/sounds/warning_sound.wav");
@@ -150,7 +146,7 @@ void Game::load()
 		}
 		// loadImage(renderer, stand, "assets/images/stand.png");
 		loadImage(loseground, "assets/background/loseGround.png");
-		// loadImage(renderer, heart, "assets/images/heart.png");
+		loadImage(heart, "assets/menu/heart.png");
 		/*
 		customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
 		customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
@@ -199,10 +195,6 @@ void Game::gameReset()
 	level = MIN_LEVEL;
 
 	live = START_LIVE;
-
-	// manager.refresh();
-
-	/*...*/
 }
 
 void Game::handlePlayEvent()
@@ -214,7 +206,6 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			cnt = 0;
 			break;
 		}
 	}
@@ -223,7 +214,7 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-			cnt = 0;
+		
 			break;
 		}
 	}
@@ -283,11 +274,12 @@ void Game::play()
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		snake.render(isPaused);
 		if(snake.checkCollision() == 2) {
-			gameState = LOSE;
-			Mix_PlayChannel(-1, loseSound, 0);
+			live--;
 		}
 		
 		showScore(renderer);
+		showLive(renderer);
+		
         if(isPaused)
 		 paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
 		 
@@ -305,7 +297,6 @@ void Game::play()
 		if (live == 0)
 		{
 			gameState = LOSE;
-
 			Mix_PlayChannel(-1, loseSound, 0);
 		}
 
