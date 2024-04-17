@@ -8,25 +8,21 @@ class SpriteComponent : public Component
 {
 private:
     TransformComponent *transform;
-    SDL_Texture *texture;
+    Texture *texture;
     SDL_Rect srcREct, destRect;
 
 public:
     SpriteComponent() = default;
-    SpriteComponent(const char *path)
+    SpriteComponent(std::string path)
     {
-        setTex(path);
+        texture->loadFromFile(path);
     }
 
     ~SpriteComponent()
     {
-        SDL_DestroyTexture(texture);
+        texture->free();
     }
 
-    void setTex(const char *path)
-    {
-        texture = Texture::LoadTexture(path);
-    }
     void init() override
     {
         transform = &entity->getComponent<TransformComponent>();
@@ -46,6 +42,6 @@ public:
 
     void draw() override
     {
-        Texture::Draw(texture, srcREct, destRect);
+        texture->render(destRect.x, destRect.y, srcREct.w, srcREct.h, NULL);
     }
 };

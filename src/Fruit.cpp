@@ -3,8 +3,19 @@
 // Constructor and destructor
 Fruit::Fruit()
 {
+    random();
+    velX = 1.5;
+    velY = 3;
+}
+
+Fruit::~Fruit()
+{
+
+}
+void Fruit::random()
+{
     int i = rand() % 9 + 1;
-    i = LEMON;
+
     switch (i)
     {
     case GRAPE:
@@ -38,6 +49,7 @@ Fruit::Fruit()
     case PEAR:
         loadImage(fruit, "assets/fruit/pear.png");
         break;
+
     case ORANGE:
         loadImage(fruit, "assets/fruit/orange.png");
         break;
@@ -45,19 +57,17 @@ Fruit::Fruit()
     default:
         break;
     }
-    posY = 500;
+    eaten = 0;
+    posY = 0;
+    posX = -fruit.getWidth();
     fruitCol.setCollision(posX, posY, fruit.getWidth() - 50, fruit.getHeight() - 50);
     frame = 0;
     timer.start();
-    posX = -fruit.getWidth();
-    velX = 1.5;
-}
-
-Fruit::~Fruit()
-{
 }
 void Fruit::moveFruit()
 {
+    if(posY < 500)
+        posY += velY;    
     posX += velX;
 
     if (posX + fruit.getWidth() > SCREEN_WIDTH)
@@ -98,4 +108,9 @@ double Fruit::getWidth()
 double Fruit::getHeight()
 {
     return fruit.getHeight();
+}
+
+Collision Fruit::getCol()
+{
+    return fruitCol;
 }

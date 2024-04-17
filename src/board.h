@@ -25,9 +25,9 @@ public:
     double posX[2], posY[2];
     double velX[2], velY[2];
     Collision boardCol[2];
+    int curId = 0, nextId = 1;
 
 private:
     Timer timer[2];
     Texture board[2];
-    int curId = 0, nextId = 1;
 };

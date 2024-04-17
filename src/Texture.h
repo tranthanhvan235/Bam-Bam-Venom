@@ -34,7 +34,8 @@ public:
 
 	// Gets image dimensions
 	int getWidth();
-	int getHeight();
+	int getHeight();	
+	int posX, posY;
 
 private:
     // The actual hardware texture

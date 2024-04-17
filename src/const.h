@@ -11,6 +11,7 @@ extern int highestScore;
 // Screen size
 const char WINDOW_TITLE[] = "Bam Bam Venom";
 const char VERSION_INFO[] = "VERSION: 1.0";
+const char PAUSED_GAME[] = "Paused";
 
 const int  SCREEN_WIDTH = 1366;
 const int  SCREEN_HEIGHT = 768;
@@ -28,7 +29,7 @@ enum gameState
     MENU = 1,
     PLAY = 2,
     HELP = 3,
-    LOSE = 4
+    LOSE = 4,
 };
 
 // Buttons
@@ -50,17 +51,17 @@ const int VERSION_WIDTH = 100;
 const int VERSION_HEIGHT = 50;
 
 // Icons
-const int SOUND_POSX = 10;
+const int SOUND_POSX = 90;
 const int SOUND_POSY = 10;
 
-const int MUSIC_POSX = 50;
-const int MUSIC_POSY = 10;
+const int MUSIC_POSX = 40;
+const int MUSIC_POSY = 20;
 
-const int SOUND_WIDTH = 30;
-const int SOUND_HEIGHT = 30;
+const int SOUND_WIDTH = 70;
+const int SOUND_HEIGHT = 70;
 
-const int MUSIC_WIDTH = 30;
-const int MUSIC_HEIGHT = 30;
+const int MUSIC_WIDTH = 50;
+const int MUSIC_HEIGHT = 50;
 
 // Button state: Music, Sound
 enum binaryState
@@ -77,7 +78,7 @@ const int SCORE_SIZE = 35;
 
 // Highest score
 const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 200;
-const int HIGHEST_SCORE_POSY = SCREEN_HEIGHT / 2;
+const int HIGHEST_SCORE_POSY = SCREEN_HEIGHT / 2 + 150;
 const int HIGHEST_SCORE_SIZE = 50;
 
 // Live
@@ -168,29 +169,34 @@ const int SELLER_START_POSITION = 3;
 const int SELLER_LEFT_BOUND = 2;
 const int SELLER_RIGHT_BOUND = 6;
 
-// Seller's ingredients
+// Seller's fruits
 const int SELLER_MAXINGREDIENTS_RENDER = 8;
 const int SELLER_MAXINGREDIENTS = 20;
 
-// INGREDIENT VARIABLES
-const int NUM_INGREDIENTS = 5;
+// FRUIT VARIABLES
+const int NUM_FRUIT = 10;
 
-// Ingredient type
-enum ingredientType
+// Fruit type
+enum fruitType
 {
 	NOTHING = 0,
-	UP_BREAD = 1,
-	LETTUCE = 2,
-	BEEF = 3,
-	TOMATO = 4,
-	DOWN_BREAD = 5
+	GRAPE = 1,
+	PINEAPPLE = 2,
+	CHERRY = 3,
+	LEMON = 4,
+	WATERMELON = 5,
+	KIWI = 6,
+	STRAWBERRY = 7,
+	PEAR = 8,
+	ORANGE = 9
 };
 
-// Ingredient position
-const int INGREDIENTS_DISTANCE = 20;
+const int maxVel = 2;
+// Fruit position
+const int FRUIT_DISTANCE = 20;
 
-const int INGREDIENTS_STARTX[] = {125, 250, 375, 500, 625, 750, 875, 1000, 1125};
-const int INGREDIENTS_STARTY = SELLER_STARTY - 225;
+const int FRUIT_STARTX[] = {125, 250, 375, 500, 625, 750, 875, 1000, 1125};
+const int FRUIT_STARTY = SELLER_STARTY - 225;
 
 // DISHES VARIABLES
 const int NUM_DISHES = 5;
@@ -207,9 +213,9 @@ const int DISHES_LIMIT_INGREDIENTS = 12;
 // HUNGRY CAT VARIABLES
 // Hungry cat position
 const int HUNGRYCAT_START_POSX = 100;
-const int HUNGRYCAT_START_POSY = INGREDIENTS_STARTY;
+const int HUNGRYCAT_START_POSY = FRUIT_STARTY;
 
-const int HUNGRYCAT_END_POSX = INGREDIENTS_STARTX[0];
+const int HUNGRYCAT_END_POSX = FRUIT_STARTX[0];
 const int HUNGRYCAT_END_POSY = 600;
 
 const int HUNGRYCAT_POSITION = 0;
@@ -223,7 +229,6 @@ const SDL_Color YELLOW = {255, 255, 0, 255};
 const SDL_Color RED = {255, 0, 0, 255};
 const SDL_Color GREEN = {0, 255, 0, 255};
 const SDL_Color BLUE = {0, 0, 255, 255};
-const SDL_Color ORANGE = {255, 165, 0, 255};
 const SDL_Color PINK = {255, 192, 203, 255};
 const SDL_Color BROWN = {132, 78, 51, 255};
 const SDL_Color SAND = {216, 164, 100, 255};

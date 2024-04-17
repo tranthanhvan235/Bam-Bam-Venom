@@ -7,8 +7,8 @@
 #include <bitset>
 #include <array>
 
-class Component;
-class Entity;
+class Component; 
+class Entity; 
 
 using ComponentID = std::size_t;
 
@@ -47,7 +47,6 @@ class Entity
 private:
     bool active = true;
     std::vector<std::unique_ptr<Component>> components;
-
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
 

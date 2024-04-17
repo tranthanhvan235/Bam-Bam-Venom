@@ -10,7 +10,7 @@
 //std::vector<ColliderComponent *> Game::colliders;
 int MAXWIDTH, MAXHEIGHT;
 double cnt = 0, id = 0;
-Snake lastSnake;
+
 Game::Game()
 {
 	gameState = MENU;
@@ -98,12 +98,13 @@ void Game::load()
 		loadMusic(music, "assets/sound/song_suitable_snake.ogg");
 		loadSound(clickSound, "assets/sound/button_push.wav");
 		loadSound(music_soundClick, "assets/sound/sound_musicClick.wav");
-		/*loadSound(leaveSound, "assets/sounds/leave_sound.wav");
-		loadSound(levelSound, "assets/sounds/level_sound.wav");
-		loadSound(loseSound, "assets/sounds/lose_sound.wav");
-		loadSound(receiveSound, "assets/sounds/receive_sound.wav");
-		loadSound(wasteSound, "assets/sounds/waste_sound.wav");
-		loadSound(warningSound, "assets/sounds/warning_sound.wav");*/
+		loadSound(jumpSound, "assets/sound/jump.wav");
+		// loadSound(leaveSound, "assets/sounds/leave_sound.wav");
+		// loadSound(levelSound, "assets/sounds/level_sound.wav");
+		loadSound(loseSound, "assets/sound/lew_lew_lose.wav");
+		loadSound(eatSound, "assets/sound/gotScore.wav");
+		// loadSound(wasteSound, "assets/sounds/waste_sound.wav");
+		// loadSound(warningSound, "assets/sounds/warning_sound.wav");
 	}
 
 	// Load font
@@ -111,15 +112,15 @@ void Game::load()
 		loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
 		loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
 		loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
-		/*loadFont(scoreFont, "assets/fonts/version.ttf", SCORE_SIZE);
-		loadFont(highestScoreFont, "assets/fonts/version.ttf", HIGHEST_SCORE_SIZE);*/
+		loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
+		loadFont(highestScoreFont, "assets/font/Lovely Kids.ttf", HIGHEST_SCORE_SIZE);
 	}
 
 	// Load images
 	{
 		loadImage(background, "assets/background/background.png");
 		loadImage(backgroundFull, "assets/background/background.png");
-		// loadImage(renderer, helpground, "assets/images/helpground.png");
+		loadImage(helpground, "assets/background/BAMBAM_HELP.png");
 		loadImage(soundOn, "assets/menu/soundOn.png");
 		loadImage(musicOn, "assets/menu/musicOn.png");
 		loadImage(soundOff, "assets/menu/soundOff.png");
@@ -150,7 +151,7 @@ void Game::load()
 			loadImage(snakeCute[i], path);
 		}
 		// loadImage(renderer, stand, "assets/images/stand.png");
-		// loadImage(renderer, loseground, "assets/images/loseground.png");
+		loadImage(loseground, "assets/background/loseGround.png");
 		// loadImage(renderer, heart, "assets/images/heart.png");
 		/*
 		customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
@@ -175,6 +176,7 @@ void Game::load()
 	// Load texts
 	title.loadFromRenderedText(WINDOW_TITLE, WHITE, titleFont);
 	version.loadFromRenderedText(VERSION_INFO, WHITE, versionFont);
+	paused.loadFromRenderedText(PAUSED_GAME, WHITE, versionFont);
 
 	// Load buttons
 	for (int i = 0; i < NUM_BUTTONS; i++)
@@ -265,6 +267,8 @@ void Game::play()
 				case SDLK_SPACE:
 				    if(!snake.goingDown && !snake.goingUp)
 					snake.goingDown = true;
+					if (soundState == ON)
+						Mix_PlayChannel(-1, jumpSound, 0);
 					break;
 				}
 			}
@@ -280,10 +284,19 @@ void Game::play()
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		snake.render(isPaused);
-		if(snake.checkCollision() == 2) gameState = LOSE;
-		else if(snake.checkCollision() == 1) score += 10;
+		if(snake.checkCollision() == 2) {
+			//gameState = LOSE;
+			Mix_PlayChannel(-1, loseSound, 0);
+		}
+		else if(snake.checkCollision() == 1) {
+			score += 10;
+			Mix_PlayChannel(-1, eatSound, 0);
+			//std::cout << score << '\n';
+		}
 		showScore(renderer);
-
+        if(isPaused)
+		 paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
+		 
 		//  Update screen
 		SDL_RenderPresent(renderer);
 
@@ -299,7 +312,7 @@ void Game::play()
 		{
 			gameState = LOSE;
 
-			// Mix_PlayChannel(-1, loseSound, 0);
+			Mix_PlayChannel(-1, loseSound, 0);
 		}
 
 		// Quit
@@ -315,6 +328,7 @@ void Game::menuReset()
 
 	if (soundState)
 		Mix_Resume(-1);
+	isPaused = false;
 }
 
 void Game::menu()
@@ -491,10 +505,14 @@ void Game::help()
 				{
 				case SDLK_ESCAPE:
 					gameState = MENU;
+					if(soundState)
+					Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				case SDLK_SPACE:
 				    isPaused = true;
 					gameState = PLAY;
+					if(soundState)
+					Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				}
 			}
@@ -505,6 +523,7 @@ void Game::help()
 		SDL_RenderClear(renderer);
 
 		// Render
+		helpground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
 		// Update screen
 		SDL_RenderPresent(renderer);
@@ -526,10 +545,10 @@ void Game::lose()
 {
 	Uint32 frameStart, frameTime;
 
-	// updateHighestScore();
-	// readHighestScore();
+	updateHighestScore();
+	readHighestScore();
 
-	// Mix_HaltMusic();
+	Mix_HaltMusic();
 
 	bool quit = false;
 	while (!quit)
@@ -550,8 +569,14 @@ void Game::lose()
 				{
 				case SDLK_ESCAPE:
 					gameState = QUIT;
+					if(soundState)
+					Mix_PlayChannel(-1, clickSound, 0);
+					break;
+
 				case SDLK_SPACE:
 					gameState = MENU;
+					if(soundState)
+					Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				}
 			}
@@ -562,6 +587,8 @@ void Game::lose()
 		SDL_RenderClear(renderer);
 
 		// Render
+	    loseground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		showHighestScore(renderer);
 
 		// Update screen
 		SDL_RenderPresent(renderer);

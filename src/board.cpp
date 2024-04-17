@@ -1,4 +1,5 @@
 #include "board.h"
+#include "Game.h"
 
 Board::Board()
 {
@@ -37,7 +38,7 @@ void Board::render(int i)
 {
     boardCol[i].setCollision(posX[i], posY[i], board[i].getWidth()*3, board[i].getHeight());
     board[i].render(posX[i], posY[i], board[i].getWidth() * 3, board[i].getHeight(), NULL);
-    boardCol[i].render();
+    //boardCol[i].render();
 }
 
 void Board::curRender()
@@ -68,12 +69,10 @@ double Board::getPosY()
 
 double Board::getWidth()
 {
-    return 289 * 2;
-    // return board.getWidth();
+    return board[1].getWidth();
 }
 
 double Board::getHeight()
 {
-    return 112 * 2;
-    // return board.getHeight();
+    return board[1].getHeight();
 }

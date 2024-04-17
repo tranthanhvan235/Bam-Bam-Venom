@@ -9,15 +9,15 @@ int random(const int &min, const int &max)
 
 void showLive(SDL_Renderer *renderer)
 {
-	for (int i = 0; i < live; i++)
+	/*for (int i = 0; i < live; i++)
 	{
 		heart.render(LIVE_POSX + i * LIVE_DISTANCE, LIVE_POSY, LIVE_WIDTH, LIVE_HEIGHT, NULL);
-	}
+	}*/
 }
 
 void showScore(SDL_Renderer *renderer)
 {
-	SDL_Color textColor = YELLOW;
+	SDL_Color textColor = WHITE;
 	std::string scoreText = "Score: " + std::to_string(score);
 	scoreTexture.loadFromRenderedText(scoreText, textColor, scoreFont);
 	scoreTexture.render(SCORE_POSX, SCORE_POSY, scoreTexture.getWidth(), scoreTexture.getHeight(), NULL);
@@ -51,7 +51,7 @@ void updateHighestScore()
 
 void showHighestScore(SDL_Renderer *renderer)
 {
-	SDL_Color textColor = ORANGE;
+	SDL_Color textColor = WHITE;
 	std::string highestScoreText = "Highest Score: " + std::to_string(highestScore);
 	scoreTexture.loadFromRenderedText(highestScoreText, textColor, highestScoreFont);
 	scoreTexture.render(HIGHEST_SCORE_POSX, HIGHEST_SCORE_POSY, scoreTexture.getWidth(), scoreTexture.getHeight(), NULL);

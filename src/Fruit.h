@@ -13,6 +13,7 @@ public:
     ~Fruit();
 
     // Render
+    void random();
     void render();
 
     void moveFruit();
@@ -23,13 +24,14 @@ public:
     double getPosY();
     double getWidth();
     double getHeight();
-
-    double posX, posY;
-    double velX, velY;
-    Collision fruitCol;
+    Collision getCol();
+    int eaten = false;
 
 private:
     double frame;
     Timer timer;
-    Texture fruit;
+    Texture fruit; 
+    double posX, posY;
+    double velX, velY;
+    Collision fruitCol;
 };

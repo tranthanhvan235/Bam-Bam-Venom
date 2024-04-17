@@ -4,12 +4,12 @@ TTF_Font *menuFont,											 // Menu font
 	*titleFont, *versionFont, *scoreFont, *highestScoreFont; // Title font
 
 
-Texture title, version; // Title texture
+Texture title, version, paused; // Title texture
 Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
 Texture snakeCute[51];
 
 Mix_Music *music;
-Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *receiveSound, *wasteSound, *warningSound; // Sound
+Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *wasteSound, *warningSound, *jumpSound; // Sound
 
 const char *menuText[NUM_BUTTONS] = {"Play", "Help", "Quit"}; // Menu text
 
