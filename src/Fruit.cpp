@@ -1,21 +1,21 @@
 #include "Fruit.h"
+#include "Game.h"
 
 // Constructor and destructor
 Fruit::Fruit()
 {
     random();
-    velX = 1.5;
-    velY = 3;
+    velY = 4;
+    timer.start();
 }
 
 Fruit::~Fruit()
 {
-
 }
 void Fruit::random()
 {
     int i = rand() % 9 + 1;
-
+    
     switch (i)
     {
     case GRAPE:
@@ -62,20 +62,32 @@ void Fruit::random()
     posX = -fruit.getWidth();
     fruitCol.setCollision(posX, posY, fruit.getWidth() - 50, fruit.getHeight() - 50);
     frame = 0;
-    timer.start();
+    velX = 1.5;
 }
+
+bool Fruit::checkCollision(const Collision &x)
+{
+    if(fruitCol.checkCollision(x))
+    {
+        eaten = true;
+        score += 10;
+		Mix_PlayChannel(-1, eatSound, 0);
+        random();
+        return 1;
+    }
+    return 0;
+}
+
 void Fruit::moveFruit()
 {
-    if(posY < 500)
-        posY += velY;    
+    if (posY < 500)
+        posY += velY;
     posX += velX;
 
-    if (posX + fruit.getWidth() > SCREEN_WIDTH)
+    if (posX > SCREEN_WIDTH)
     {
         posX = -fruit.getWidth();
-        velX = 1.5; //rand() % maxVel + 1.5;
     }
-
 }
 // Render
 void Fruit::render()

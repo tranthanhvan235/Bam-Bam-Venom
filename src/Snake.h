@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Fruit.h"
-#include "board.h"
+#include "wood.h"
 #include "Collision.h"
+
+#include <vector>
 
 class Snake
 {
@@ -30,6 +32,8 @@ public:
     int sVelX, sVelY;
 
     int frame = 0, velFrame = 1;
+    int immortal = 3;
+    int var;
     
     Texture snake;
     SDL_Rect snakeClips[5];
@@ -38,6 +42,6 @@ public:
     Timer timer;
 
     Fruit fruit;
-    Board board;
+    Wood wood;
     Collision snakeCol[5];
 };

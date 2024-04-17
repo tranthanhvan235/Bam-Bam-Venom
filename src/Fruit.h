@@ -25,6 +25,7 @@ public:
     double getWidth();
     double getHeight();
     Collision getCol();
+    bool checkCollision(const Collision &x);
     int eaten = false;
 
 private:

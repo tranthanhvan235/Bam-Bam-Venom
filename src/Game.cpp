@@ -2,9 +2,7 @@
 #include "Res.h"
 #include "ECS/Components.h"
 #include "Vector2D.h"
-#include "Collision.h"
 #include "Snake.h"
-#include "board.h"
 
 //Manager manager;
 //std::vector<ColliderComponent *> Game::colliders;
@@ -95,7 +93,7 @@ void Game::load()
 
 	// Load music
 	{
-		loadMusic(music, "assets/sound/song_suitable_snake.ogg");
+		loadMusic(music, "assets/sound/song.WAV");
 		loadSound(clickSound, "assets/sound/button_push.wav");
 		loadSound(music_soundClick, "assets/sound/sound_musicClick.wav");
 		loadSound(jumpSound, "assets/sound/jump.wav");
@@ -285,14 +283,10 @@ void Game::play()
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		snake.render(isPaused);
 		if(snake.checkCollision() == 2) {
-			//gameState = LOSE;
+			gameState = LOSE;
 			Mix_PlayChannel(-1, loseSound, 0);
 		}
-		else if(snake.checkCollision() == 1) {
-			score += 10;
-			Mix_PlayChannel(-1, eatSound, 0);
-			//std::cout << score << '\n';
-		}
+		
 		showScore(renderer);
         if(isPaused)
 		 paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
