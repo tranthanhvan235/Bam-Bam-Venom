@@ -33,7 +33,7 @@ bool Game::init()
 		}
 
 		// Create window
-		window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN| SDL_WINDOW_RESIZABLE);
+		window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (window == NULL)
 		{
 			std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << std::endl;
@@ -97,6 +97,7 @@ void Game::load()
 		loadSound(varSound, "assets/sound/snake_var.wav");
 		loadSound(loseSound, "assets/sound/loseSound.wav");
 		loadSound(eatSound, "assets/sound/gotScore.wav");
+		loadSound(transSound, "assets/sound/trans.wav");
 		// loadSound(wasteSound, "assets/sounds/waste_sound.wav");
 		// loadSound(warningSound, "assets/sounds/warning_sound.wav");
 	}
@@ -214,7 +215,7 @@ void Game::handlePlayEvent()
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_SPACE:
-		
+
 			break;
 		}
 	}
@@ -224,7 +225,7 @@ void Game::play()
 {
 	Uint32 frameStart, frameTime;
 	Snake snake;
-    
+
 	gameReset();
 
 	bool quit = false;
@@ -249,40 +250,46 @@ void Game::play()
 				case SDLK_ESCAPE:
 					gameState = MENU;
 					break;
+
 				case SDLK_p:
 					isPaused = isPaused xor 1;
 					std::cout << isPaused << '\n';
 					break;
+
 				case SDLK_SPACE:
-				    if(!snake.goingDown && !snake.goingUp)
-					snake.goingDown = true;
-					if (soundState == ON)
-						Mix_PlayChannel(-1, jumpSound, 0);
+					if (!snake.goingDown && !snake.goingUp)
+						snake.goingDown = true;
+
+					if (snake.frame == 0 && snake.goingDown && SDL_GetTicks() % 2 == 0)
+					{
+						if (soundState == ON)
+							Mix_PlayChannel(-1, jumpSound, 0);
+					}
 					break;
 				}
 			}
-			//handlePlayEvent();
-			
+			// handlePlayEvent();
 		}
 
 		// Clear screen
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		//SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
+		// SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
 		SDL_RenderClear(renderer);
 
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		snake.render(isPaused);
-		if(snake.checkCollision() == 2) {
+		if (snake.checkCollision() == 2)
+		{
 			live--;
 		}
-		
+
 		showScore(renderer);
 		showLive(renderer);
-		
-        if(isPaused)
-		 paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
-		 
+
+		if (isPaused)
+			paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
+
 		//  Update screen
 		SDL_RenderPresent(renderer);
 
@@ -340,6 +347,7 @@ void Game::menu()
 				{
 					if (buttons[i].isMouseInside(event.motion.x, event.motion.y))
 					{
+						curId = i;
 						buttons[i].changeColor(SAND);
 					}
 					else
@@ -355,6 +363,7 @@ void Game::menu()
 					if (buttons[i].isMouseInside(event.motion.x, event.motion.y))
 					{
 						buttons[i].changeColor(SAND);
+						curId = i;
 						if (soundState == ON)
 							Mix_PlayChannel(-1, clickSound, 0);
 					}
@@ -372,7 +381,7 @@ void Game::menu()
 						Mix_PauseMusic();
 						musicState = OFF;
 					}
-					Mix_PlayChannel(-1, music_soundClick, 0);	
+					Mix_PlayChannel(-1, music_soundClick, 0);
 				}
 
 				if (soundButton.isMouseInside(event.motion.x, event.motion.y))
@@ -397,6 +406,7 @@ void Game::menu()
 					if (buttons[i].isMouseInside(event.motion.x, event.motion.y))
 					{
 						buttons[i].changeColor(SAND);
+						curId = i;
 						switch (i)
 						{
 						case 0:
@@ -416,57 +426,104 @@ void Game::menu()
 					}
 				}
 				break;
+
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_UP:
+				case SDLK_w:
+					buttons[curId].changeColor(BROWN);
+					if (curId > 0)
+						curId--;
+					buttons[curId].changeColor(SAND);
+					if (soundState == ON)
+						Mix_PlayChannel(-1, transSound, 0);
+					break;
+
+				case SDLK_DOWN:
+				case SDLK_s:
+					buttons[curId].changeColor(BROWN);
+					if (curId + 1 < NUM_BUTTONS)
+						curId++;
+					buttons[curId].changeColor(SAND);
+					if (soundState == ON)
+						Mix_PlayChannel(-1, transSound, 0);
+					break;
+				}
+
+			case SDL_KEYUP:
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_KP_ENTER:
+				case SDLK_RETURN:
+				case SDLK_SPACE:
+					buttons[curId].changeColor(SAND);
+					if (soundState == ON)
+						Mix_PlayChannel(-1, clickSound, 0);
+					switch (curId)
+					{
+					case 0:
+						gameState = PLAY;
+						break;
+					case 1:
+						gameState = HELP;
+						break;
+					case 2:
+						gameState = QUIT;
+						break;
+					}
+					break;
+				}
 			}
+
+			// Clear screen
+			SDL_SetRenderDrawColor(renderer, 136, 193, 68, 50);
+			SDL_RenderClear(renderer);
+
+			// Render
+			// backgroundFull.render(0, 0, 2000, 2000, NULL);
+			background.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+
+			if (musicState == ON)
+				musicOn.render(MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
+			else
+				musicOff.render(MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
+
+			if (soundState == ON)
+				soundOn.render(SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
+			else
+				soundOff.render(SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
+
+			title.render(SCREEN_WIDTH / 2 - title.getWidth() / 2, SCREEN_HEIGHT / 2 - title.getHeight() / 2 - 200, title.getWidth(), title.getHeight(), NULL);
+
+			version.render(SCREEN_WIDTH - version.getWidth() - 10, 10, version.getWidth(), version.getHeight(), NULL);
+
+			for (int i = 0; i < NUM_BUTTONS; i++)
+			{
+				buttons[i].render(renderer);
+			}
+
+			snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
+
+			id += 0.2;
+			if (id > 47)
+				id = 0;
+			// Update screen
+			SDL_RenderPresent(renderer);
+
+			// Frame rate
+			frameTime = SDL_GetTicks() - frameStart;
+			if (frameTime < DELAY_TIME)
+			{
+				SDL_Delay(DELAY_TIME - frameTime);
+			}
+
+			// Quit
+			if (gameState != MENU)
+				quit = true;
 		}
-
-		// Clear screen
-		SDL_SetRenderDrawColor(renderer, 136, 193, 68, 50);
-		SDL_RenderClear(renderer);
-
-		// Render
-		//backgroundFull.render(0, 0, 2000, 2000, NULL);
-		background.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-
-		if (musicState == ON)
-			musicOn.render(MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
-		else
-			musicOff.render(MUSIC_POSX, MUSIC_POSY, MUSIC_WIDTH, MUSIC_HEIGHT, NULL);
-
-		if (soundState == ON)
-			soundOn.render(SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
-		else
-			soundOff.render(SOUND_POSX, SOUND_POSY, SOUND_WIDTH, SOUND_HEIGHT, NULL);
-
-		title.render(SCREEN_WIDTH / 2 - title.getWidth() / 2, SCREEN_HEIGHT / 2 - title.getHeight() / 2 - 200, title.getWidth(), title.getHeight(), NULL);
-
-		version.render(SCREEN_WIDTH - version.getWidth() - 10, 10, version.getWidth(), version.getHeight(), NULL);
-
-		for (int i = 0; i < NUM_BUTTONS; i++)
-		{
-			buttons[i].render(renderer);
-		}
-
-		snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
-
-		id += 0.2;
-		if (id > 47)
-			id = 0;
-		// Update screen
-		SDL_RenderPresent(renderer);
-
-		// Frame rate
-		frameTime = SDL_GetTicks() - frameStart;
-		if (frameTime < DELAY_TIME)
-		{
-			SDL_Delay(DELAY_TIME - frameTime);
-		}
-
-		// Quit
-		if (gameState != MENU)
-			quit = true;
 	}
 }
-
 void Game::help()
 {
 	Uint32 frameStart, frameTime;
@@ -490,14 +547,14 @@ void Game::help()
 				{
 				case SDLK_ESCAPE:
 					gameState = MENU;
-					if(soundState)
-					Mix_PlayChannel(-1, clickSound, 0);
+					if (soundState)
+						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				case SDLK_SPACE:
-				    isPaused = true;
+					isPaused = true;
 					gameState = PLAY;
-					if(soundState)
-					Mix_PlayChannel(-1, clickSound, 0);
+					if (soundState)
+						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				}
 			}
@@ -554,14 +611,14 @@ void Game::lose()
 				{
 				case SDLK_ESCAPE:
 					gameState = QUIT;
-					if(soundState)
-					Mix_PlayChannel(-1, clickSound, 0);
+					if (soundState)
+						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 
 				case SDLK_SPACE:
 					gameState = MENU;
-					if(soundState)
-					Mix_PlayChannel(-1, clickSound, 0);
+					if (soundState)
+						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				}
 			}
@@ -572,7 +629,7 @@ void Game::lose()
 		SDL_RenderClear(renderer);
 
 		// Render
-	    loseground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+		loseground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 		showHighestScore(renderer);
 
 		// Update screen

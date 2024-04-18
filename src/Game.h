@@ -50,6 +50,7 @@ private:
     bool soundState = ON;
     bool isPaused = false;
 
+	int curId = 0;
     bool loop = true;
     SDL_Window *window;
 };
