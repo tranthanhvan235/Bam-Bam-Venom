@@ -5,30 +5,28 @@
 #include "Res.h"
 #include "Collision.h"
 
-const int WOODSIZE = 13;
-
 class Wood
 {
 public:
     Wood();
     ~Wood();
 
-    void random(int i);
+    void random();
     void render();
     void move();
     void generate(bool isPaused);
-    double getPosX(int i);
-    double getPosY(int i);
+    double getPosX();
+    double getPosY();
     bool checkCollision(const Collision &x);
-    Collision getCol(int i);
+    Collision getCol();
     int SIZEW = 113;
+    double posX, posY;
 
 private:
-    double posX[WOODSIZE], posY[WOODSIZE];
-    double velX[WOODSIZE], velY[WOODSIZE];
+    double velX, velY;
     int frame;
-    Texture wood[WOODSIZE];
+    Texture wood;
     Timer timer;
-    Collision woodCol[WOODSIZE];
+    Collision woodCol;
     SDL_Rect clips[5];
 };

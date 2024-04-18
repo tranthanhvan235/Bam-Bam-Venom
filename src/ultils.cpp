@@ -57,12 +57,14 @@ void showHighestScore(SDL_Renderer *renderer)
 	scoreTexture.render(HIGHEST_SCORE_POSX, HIGHEST_SCORE_POSY, scoreTexture.getWidth(), scoreTexture.getHeight(), NULL);
 }
 
-void levelUp()
+bool levelUp()
 {
 	if (score >= LEVEL_POINT[level] && level < MAX_LEVEL)
 	{
 		level++;
 		
 		Mix_PlayChannel(-1, levelSound, 0);
+		return true;
 	}
+	return false;
 }

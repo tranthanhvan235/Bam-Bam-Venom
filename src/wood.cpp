@@ -3,12 +3,8 @@
 
 Wood::Wood()
 {
-
-    for (int i = 0; i < WOODSIZE; i++)
-    {
-        random(i);
-        posX[i] = -i * SIZEW;
-    }
+    random();
+    posX = -SIZEW;
     for (int i = 0; i < 5; i++)
         clips[i] = {i * SIZEW, 0, SIZEW, SIZEW};
 }
@@ -17,66 +13,56 @@ Wood::~Wood()
 {
 }
 
-void Wood::random(int i)
+void Wood::random()
 {
     int type = rand() % 2;
     switch (type)
     {
     case 0:
-        loadImage(wood[i], "assets/background/1x/1x/typeWood1.png");
+        loadImage(wood, "assets/background/1x/1x/typeWood1.png");
         break;
 
     case 1:
-        loadImage(wood[i], "assets/background/1x/1x/typeWood2.png");
+        loadImage(wood, "assets/background/1x/1x/typeWood2.png");
         break;
     }
 
     timer.start();
     frame = 0;
-    posX[i] = 0;
-    posY[i] = 610;
-    woodCol[i].setCollision(posX[i], posY[i], SIZEW, SIZEW);
-    velX[i] = randVel;
+    posX = 0;
+    posY = 610;
+    woodCol.setCollision(posX, posY, SIZEW, SIZEW);
+    velX = randVel;
 }
 
 bool Wood::checkCollision(const Collision &x)
 {
-    for (int i = 0; i < WOODSIZE; i++)
-        if (woodCol[i].checkCollision(x))
-            return true;
-
-    return false;
+    return woodCol.checkCollision(x);
 }
 
 void Wood::move()
 {
-    for (int i = 0; i < WOODSIZE; i++)
-    {
-        posX[i] += velX[i];
+    posX += velX;
 
-        if (posX[i] > SCREEN_WIDTH)
-        {
-            random(i);
-            posX[i] = -SIZEW;
-            // velX = 1.5; // rand() % maxVel + 1.5;
-        }
+    if (posX > SCREEN_WIDTH)
+    {
+        random();
+        posX = -SIZEW;
+        // velX = 1.5; // rand() % maxVel + 1.5;
     }
 }
 
 void Wood::render()
 {
-    if (timer.get_ticks() % 7 == 0)
+    if (timer.get_ticks() % 3 == 0)
         frame++;
     if (frame == 5)
         frame = 0;
     SDL_Rect *currentClip = &clips[frame];
 
-    for (int i = 0; i < WOODSIZE; i++)
-    {
-        woodCol[i].setCollision(posX[i], posY[i], SIZEW, SIZEW);
-        wood[i].render(posX[i], posY[i], SIZEW, SIZEW, currentClip, NULL);
-        // woodCol[i].render();
-    }
+    woodCol.setCollision(posX, posY, SIZEW, SIZEW);
+    wood.render(posX, posY, SIZEW, SIZEW, currentClip, NULL);
+    //woodCol.render();
 }
 
 void Wood::generate(bool isPaused)
@@ -91,17 +77,17 @@ void Wood::generate(bool isPaused)
     render();
 }
 
-double Wood::getPosX(int i)
+double Wood::getPosX()
 {
-    return posX[i];
+    return posX;
 }
 
-double Wood::getPosY(int i)
+double Wood::getPosY()
 {
-    return posY[i];
+    return posY;
 }
 
-Collision Wood::getCol(int i)
+Collision Wood::getCol()
 {
-    return woodCol[i];
+    return woodCol;
 }

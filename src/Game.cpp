@@ -1,7 +1,5 @@
 #include "Game.h"
 #include "Res.h"
-#include "ECS/Components.h"
-#include "Vector2D.h"
 #include "Snake.h"
 
 Game::Game()
@@ -93,7 +91,7 @@ void Game::load()
 		loadSound(jumpSound, "assets/sound/jump.wav");
 		loadSound(fruitDown, "assets/sound/fruit_down.wav");
 		// loadSound(leaveSound, "assets/sounds/leave_sound.wav");
-		// loadSound(levelSound, "assets/sounds/level_sound.wav");
+		loadSound(levelSound, "assets/sound/background-audio_script_sound.wav");
 		loadSound(varSound, "assets/sound/snake_var.wav");
 		loadSound(loseSound, "assets/sound/loseSound.wav");
 		loadSound(eatSound, "assets/sound/gotScore.wav");
@@ -109,6 +107,7 @@ void Game::load()
 		loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
 		loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
 		loadFont(highestScoreFont, "assets/font/Lovely Kids.ttf", HIGHEST_SCORE_SIZE);
+		loadFont(levelUpFont, "assets/font/Bethanie Snake_PersonalUseOnly.ttf", LEVEL_SIZE);
 	}
 
 	// Load images
@@ -171,8 +170,8 @@ void Game::load()
 	// Load texts
 	title.loadFromRenderedText(WINDOW_TITLE, WHITE, titleFont);
 	version.loadFromRenderedText(VERSION_INFO, WHITE, versionFont);
-	paused.loadFromRenderedText(PAUSED_GAME, WHITE, versionFont);
-
+	paused.loadFromRenderedText(PAUSED_GAME, WHITE, titleFont);
+	LevelUP.loadFromRenderedText(LEVEL_UP, WHITE, levelUpFont);
 	// Load buttons
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
@@ -196,6 +195,8 @@ void Game::gameReset()
 	level = MIN_LEVEL;
 
 	live = START_LIVE;
+
+	isPaused = false;
 }
 
 void Game::handlePlayEvent()
@@ -224,7 +225,7 @@ void Game::handlePlayEvent()
 void Game::play()
 {
 	Uint32 frameStart, frameTime;
-	Snake snake;
+	Snake *snake = new Snake();
 
 	gameReset();
 
@@ -257,14 +258,14 @@ void Game::play()
 					break;
 
 				case SDLK_SPACE:
-					if (!snake.goingDown && !snake.goingUp)
-						snake.goingDown = true;
-
-					if (snake.frame == 0 && snake.goingDown && SDL_GetTicks() % 2 == 0)
-					{
-						if (soundState == ON)
+				case SDLK_DOWN:
+					if (isPaused)
+						break;
+					if (!snake->goingDown && !snake->goingUp)
+						snake->goingDown = true;
+					if (snake->frame == 0 && SDL_GetTicks() % 2)
+						if (soundState)
 							Mix_PlayChannel(-1, jumpSound, 0);
-					}
 					break;
 				}
 			}
@@ -278,18 +279,27 @@ void Game::play()
 
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-		snake.render(isPaused);
-		if (snake.checkCollision() == 2)
+
+		if (isLevelUp)
 		{
-			live--;
+			snake->reset();
+			isLevelUp--;
+			if(isLevelUp == 0)  isPaused = false;
+			LevelUP.render(SCREEN_WIDTH / 2 - LevelUP.getWidth() / 2, SCREEN_HEIGHT / 2 - LevelUP.getHeight() / 2, LevelUP.getWidth(), LevelUP.getHeight(), NULL);
 		}
+		snake->render(isPaused);
 
 		showScore(renderer);
 		showLive(renderer);
 
-		if (isPaused)
+		if (isPaused && !isLevelUp)
 			paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
-
+		if (levelUp())
+		{
+			isLevelUp = 5;
+			isPaused = true;
+			randVel++;
+		}
 		//  Update screen
 		SDL_RenderPresent(renderer);
 
@@ -434,20 +444,26 @@ void Game::menu()
 				case SDLK_w:
 					buttons[curId].changeColor(BROWN);
 					if (curId > 0)
+					{
 						curId--;
+						if (soundState == ON)
+							Mix_PlayChannel(-1, transSound, 0);
+					}
 					buttons[curId].changeColor(SAND);
-					if (soundState == ON)
-						Mix_PlayChannel(-1, transSound, 0);
+
 					break;
 
 				case SDLK_DOWN:
 				case SDLK_s:
 					buttons[curId].changeColor(BROWN);
 					if (curId + 1 < NUM_BUTTONS)
+					{
 						curId++;
+						if (soundState == ON)
+							Mix_PlayChannel(-1, transSound, 0);
+					}
 					buttons[curId].changeColor(SAND);
-					if (soundState == ON)
-						Mix_PlayChannel(-1, transSound, 0);
+
 					break;
 				}
 
@@ -551,7 +567,7 @@ void Game::help()
 						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				case SDLK_SPACE:
-					isPaused = true;
+					// isPaused = true;
 					gameState = PLAY;
 					if (soundState)
 						Mix_PlayChannel(-1, clickSound, 0);

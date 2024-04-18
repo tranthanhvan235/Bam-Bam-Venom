@@ -14,9 +14,12 @@ public:
     ~Snake();
 
     int SNAKEWIDTH = 250 * 1.5, SNAKEHEIGHT = 250*1.5;
-
+    
+    void reset();
     void handleEventSnake(SDL_Event &e);
     void updateGame();
+
+    void randLevel();
 
     int checkCollision();
     
@@ -34,7 +37,7 @@ public:
     int frame = 0, velFrame = 1;
     int immortal = 3;
     int var;
-    int fruitSize;
+    int fruitSize, woodSize;
     
     Texture snake;
     SDL_Rect snakeClips[5];
@@ -43,6 +46,6 @@ public:
     Timer timer;
 
     std::vector<Fruit*> fruit;
-    Wood wood;
+    std::vector<Wood*> wood;
     Collision snakeCol[5];
 };

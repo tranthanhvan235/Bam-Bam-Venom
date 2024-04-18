@@ -11,9 +11,9 @@
 #include "Texture.h"
 
 extern TTF_Font *menuFont,									 // Menu font
-	*titleFont, *versionFont, *scoreFont, *highestScoreFont; // Title font
+	*titleFont, *versionFont, *scoreFont, *highestScoreFont, *levelUpFont, *pausedFont; // Title font
 
-extern Texture title, version, paused; // Title texture
+extern Texture title, version, paused, LevelUP; // Title texture
 extern Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
 extern Texture snakeCute[51];
 

@@ -45,7 +45,7 @@ public:
 
 private:
     int gameState;
-    
+    int isLevelUp;
     bool musicState = ON;
     bool soundState = ON;
     bool isPaused = false;

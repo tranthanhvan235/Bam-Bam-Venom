@@ -20,4 +20,4 @@ void readHighestScore();
 void updateHighestScore();
 void showHighestScore(SDL_Renderer *renderer);
 
-void levelUp();
+bool levelUp();

@@ -1,10 +1,10 @@
 #include "Res.h"
 
 TTF_Font *menuFont,											 // Menu font
-	*titleFont, *versionFont, *scoreFont, *highestScoreFont; // Title font
+	*titleFont, *versionFont, *scoreFont, *highestScoreFont, *levelUpFont, *pausedFont; // Title font
 
 
-Texture title, version, paused; // Title texture
+Texture title, version, paused, LevelUP; // Title texture
 Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
 Texture snakeCute[51];
 

@@ -6,7 +6,7 @@ Fruit::Fruit()
 {
     random();
     timer.start();
-    velY = 3;
+    velY = rand() % maxVel + 1;
     posY = 0;
 }
 
@@ -61,7 +61,8 @@ void Fruit::random()
     eaten = 0;
     fruitCol.setCollision(posX, posY, fruit.getWidth() - 50, fruit.getHeight() - 50);
     frame = 0;
-    velX = randVel;
+    velX = randVel - 1.2;
+    posY = -(rand() % 50) - 50;
 }
 
 bool Fruit::checkCollision(const Collision &x)
@@ -72,7 +73,8 @@ bool Fruit::checkCollision(const Collision &x)
         score += 10;
 		Mix_PlayChannel(-1, eatSound, 0);
         random();
-        posX = -fruit.getWidth();
+        posX = -fruit.getWidth() + rand() % 100;
+        posY = 0;
         return 1;
     }
     return 0;
@@ -82,6 +84,7 @@ void Fruit::moveFruit()
 {
     if (posY < 500)
         posY += velY;
+    else velX = randVel;
     posX += velX;
 
     if (posX > SCREEN_WIDTH)
