@@ -12,7 +12,8 @@ extern double randVel;
 // Screen size
 const char WINDOW_TITLE[] = "Bam Bam Venom";
 const char VERSION_INFO[] = "VERSION: 1.0";
-const char PAUSED_GAME[] = "Paused";
+const char PAUSED_GAME[] = "Pause";
+const char LEVEL_UP[] = "LEVEL UP !";
 
 const int  SCREEN_WIDTH = 1366;
 const int  SCREEN_HEIGHT = 768;
@@ -50,6 +51,7 @@ const int VERSION_POSY = 10;
 const int VERSION_SIZE = 25;
 const int VERSION_WIDTH = 100;
 const int VERSION_HEIGHT = 50;
+const int LEVEL_SIZE = 60;
 
 // Icons
 const int SOUND_POSX = 100;
@@ -75,7 +77,7 @@ enum binaryState
 // Score
 const int SCORE_POSX = 10;
 const int SCORE_POSY = 10;
-const int SCORE_SIZE = 35;
+const int SCORE_SIZE = 40;
 
 // Highest score
 const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 150;
@@ -96,83 +98,7 @@ const int LIVE_HEIGHT = 30;
 // Level
 const int MIN_LEVEL = 1;
 const int MAX_LEVEL = 5;
-const int LEVEL_POINT[] = {0, 10, 20, 30, 40};
-
-// CUSTOMER VARIABLES
-const int NUM_CUSTOMERS = 5;
-
-// Customer position
-const int CUSTOMER_STARTX = 1400;
-const int CUSTOMER_STARTY = 625;
-const int CUSTOMER_WAITX[] = {350, 550, 750, 950, 1150};
-const int CUSTOMER_VELOCITY = 5;
-
-// Customer motion
-const int CUSTOMER_MOTION_RECTANGLE = 9;
-
-// Customer's requests
-const int CUSTOMER_MAXREQUESTS = 10;
-
-const int CUSTOMER_MIN_INGREDIENTS_REQUEST[] = {0, 3, 3, 5, 7, 7};
-const int CUSTOMER_MAX_INGREDIENTS_REQUEST[] = {0, 5, 5, 7, 10, 10};
-
-const int CUSTOMER_REQUESTS_POSX[] = {475, 675, 875, 1075, 1275};
-const int CUSTOMER_REQUESTS_POSY = 625;
-
-const int CUSTOMER_BUBBLE_POSX[] = {475, 675, 875, 1075, 1275};
-const int CUSTOMER_BUBBLE_POSY = 700;
-const int CUSTOMER_BUBBLE_WIDTH = 65;
-const int CUSTOMER_BUBBLE_DISTANCE = 20;
-
-const int CUSTOMER_REQUESTS_DISTANCE = 10;
-
-// Customer's waiting state
-const int CUSTOMER_BAR_WIDTH = 100;
-const int CUSTOMER_BAR_HEIGHT = 10;
-
-const float CUSTOMER_MAX_WAITING_TIME = 100;
-const float CUSTOMER_WAITING_TIME[] = {0.0, 0.01, 0.02, 0.03, 0.04, 0.05};
-
-// Customer type
-enum customerType
-{
-	GHOST = 0,
-	FOX = 1,
-	WOLF = 2
-};
-
-// Customer status
-enum customerStatus
-{
-	OUTBOUND = 0,
-	RUNNING = 1,
-	WAITING = 2,
-	LEAVING = 3
-};
-
-// SELLER VARIABLES
-// Seller status
-enum sellerStatus
-{
-	IDLE = 0,
-	GO_UP = 1,
-	GO_DOWN = 2,
-	GO_LEFT = 3,
-	GO_RIGHT = 4
-};
-
-// Seller position
-const int SELLER_STARTX = 475;
-const int SELLER_STARTY = 350;
-const int SELLER_STEP = 125;
-const int SELLER_START_POSITION = 3;
-
-const int SELLER_LEFT_BOUND = 2;
-const int SELLER_RIGHT_BOUND = 6;
-
-// Seller's fruits
-const int SELLER_MAXINGREDIENTS_RENDER = 8;
-const int SELLER_MAXINGREDIENTS = 20;
+const int LEVEL_POINT[] = {0, 20, 50, 100, 150};
 
 // FRUIT VARIABLES
 const int NUM_FRUIT = 10;
@@ -193,35 +119,6 @@ enum fruitType
 };
 
 const int maxVel = 2;
-// Fruit position
-const int FRUIT_DISTANCE = 20;
-
-const int FRUIT_STARTX[] = {125, 250, 375, 500, 625, 750, 875, 1000, 1125};
-const int FRUIT_STARTY = SELLER_STARTY - 225;
-
-// DISHES VARIABLES
-const int NUM_DISHES = 5;
-
-// Dishes position
-const int DISHES_POSX[] = {375, 500, 625, 750, 875};
-const int DISHES_POSY = 400;
-const int DISHES_FIRST_POSITION = 2;
-const int DISHES_LAST_POSITION = 6;
-
-const int DISHES_MAX_INGREDIENTS = 20;
-const int DISHES_LIMIT_INGREDIENTS = 12;
-
-// HUNGRY CAT VARIABLES
-// Hungry cat position
-const int HUNGRYCAT_START_POSX = 100;
-const int HUNGRYCAT_START_POSY = FRUIT_STARTY;
-
-const int HUNGRYCAT_END_POSX = FRUIT_STARTX[0];
-const int HUNGRYCAT_END_POSY = 600;
-
-const int HUNGRYCAT_POSITION = 0;
-
-const float HUNGRYCAT_EATING_TIME[] = {0, 1, 1, 2, 2, 3};
 
 // COLORS
 const SDL_Color WHITE = {255, 255, 255, 255};
