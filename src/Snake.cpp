@@ -48,17 +48,15 @@ int Snake::checkCollision()
   for (int i = 0; i < fruitSize; i++)
     if (fruit[i]->checkCollision(snakeCol[frame]))
     {
-      immortal = 5;
+      immortal = 10;
       return 1;
     }
   if (wood.checkCollision(snakeCol[frame]))
   {
     immortal--;
     if (immortal)
-      {
-        Mix_PlayChannel(-1, varSound, 0);
-        return 0;
-      }
+      return 0;
+    Mix_PlayChannel(-1, varSound, 0);
     return 2;
   }
   return 0;
@@ -66,40 +64,34 @@ int Snake::checkCollision()
 
 void Snake::render(bool isPaused)
 {
-  if (!isPaused)
+  wood.generate(isPaused);
+  for (int i = 0; i < fruitSize; i++)
+    fruit[i]->generate(isPaused);
+
+  if (frame == 4 && goingDown)
   {
-    wood.generate();
-    for (int i = 0; i < fruitSize; i++)
-      fruit[i]->generate();
-
-    if (frame == 4 && goingDown)
-    {
-      goingDown = false;
-      goingUp = true;
-    }
-    else if (frame == 0 && goingUp)
-    {
-      goingUp = false;
-      goingDown = false;
-    }
-
-    if (goingUp)
-      velFrame = -1;
-    else if (goingDown)
-      velFrame = 1;
-    else
-      velFrame = 0;
-
-    if (timer.get_ticks() % 3 == 0)
-      frame += velFrame;
+    goingDown = false;
+    goingUp = true;
   }
+  else if (frame == 0 && goingUp)
+  {
+    goingUp = false;
+    goingDown = false;
+  }
+
+  if (goingUp)
+    velFrame = -1;
+  else if (goingDown)
+    velFrame = 1;
   else
-  {
-    wood.render();
-    for (int i = 0; i < fruitSize; i++)
-      fruit[i]->render();
-  }
-  // std::cout << var << '\n';
+    velFrame = 0;
+  
+  if(isPaused) timer.pause();
+  else timer.unpause();
+  
+  if (timer.get_ticks() % 3 == 0)
+    frame += velFrame;
+  
   SDL_Rect *currentClip = &snakeClips[frame];
   snake.render(sPosX, sPosY, SNAKEWIDTH, SNAKEHEIGHT, currentClip, NULL);
 }

@@ -16,7 +16,7 @@ public:
     void random(int i);
     void render();
     void move();
-    void generate();
+    void generate(bool isPaused);
     double getPosX(int i);
     double getPosY(int i);
     bool checkCollision(const Collision &x);

@@ -18,7 +18,7 @@ public:
 
     void moveFruit();
 
-    void generate();
+    void generate(bool isPaused);
 
     double getPosX();
     double getPosY();

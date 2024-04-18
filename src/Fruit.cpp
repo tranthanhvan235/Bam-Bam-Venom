@@ -96,8 +96,9 @@ void Fruit::render()
     fruit.render(posX, posY, fruit.getHeight(), fruit.getHeight(), NULL);
 }
 
-void Fruit::generate()
+void Fruit::generate(bool isPaused)
 {
+    if(!isPaused)
     moveFruit();
     render();
 }

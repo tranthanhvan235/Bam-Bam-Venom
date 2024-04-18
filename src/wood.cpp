@@ -3,15 +3,14 @@
 
 Wood::Wood()
 {
-   
-    for(int i = 0; i < WOODSIZE; i++)
+
+    for (int i = 0; i < WOODSIZE; i++)
     {
         random(i);
         posX[i] = -i * SIZEW;
     }
     for (int i = 0; i < 5; i++)
         clips[i] = {i * SIZEW, 0, SIZEW, SIZEW};
-    
 }
 
 Wood::~Wood()
@@ -72,17 +71,23 @@ void Wood::render()
         frame = 0;
     SDL_Rect *currentClip = &clips[frame];
 
-    for(int i = 0; i < WOODSIZE; i++)
+    for (int i = 0; i < WOODSIZE; i++)
     {
-    woodCol[i].setCollision(posX[i], posY[i], SIZEW, SIZEW);
-    wood[i].render(posX[i], posY[i], SIZEW, SIZEW, currentClip, NULL);
-    //woodCol[i].render();
+        woodCol[i].setCollision(posX[i], posY[i], SIZEW, SIZEW);
+        wood[i].render(posX[i], posY[i], SIZEW, SIZEW, currentClip, NULL);
+        // woodCol[i].render();
     }
 }
 
-void Wood::generate()
+void Wood::generate(bool isPaused)
 {
-    move();
+    if (isPaused)
+        timer.pause();
+    else
+    {
+        timer.unpause();
+        move();
+    }
     render();
 }
 

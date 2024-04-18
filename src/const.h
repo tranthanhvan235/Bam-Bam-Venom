@@ -52,14 +52,14 @@ const int VERSION_WIDTH = 100;
 const int VERSION_HEIGHT = 50;
 
 // Icons
-const int SOUND_POSX = 90;
-const int SOUND_POSY = 10;
+const int SOUND_POSX = 100;
+const int SOUND_POSY = 5;
 
 const int MUSIC_POSX = 40;
-const int MUSIC_POSY = 20;
+const int MUSIC_POSY = 10;
 
-const int SOUND_WIDTH = 70;
-const int SOUND_HEIGHT = 70;
+const int SOUND_WIDTH = 60;
+const int SOUND_HEIGHT = 60;
 
 const int MUSIC_WIDTH = 50;
 const int MUSIC_HEIGHT = 50;
@@ -78,7 +78,7 @@ const int SCORE_POSY = 10;
 const int SCORE_SIZE = 35;
 
 // Highest score
-const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 200;
+const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 150;
 const int HIGHEST_SCORE_POSY = SCREEN_HEIGHT / 2 + 150;
 const int HIGHEST_SCORE_SIZE = 50;
 
