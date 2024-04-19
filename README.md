@@ -27,7 +27,7 @@ This is my own first game project using `C`, `C++` and ` SDL2 libraries` at Univ
 ### Fruits & Obstacles
     These are some fruits and obstacles in the game:
 #### Fruits
-![cherry](assets/fruit/cherry.png)![grape](assets\fruit\grape.png) ![kiwi](assets\fruit\kiwi.png) ![lemon](assets\fruit\lemon.png) ![orange](assets\fruit\orange.png) ![pear](assets\fruit\pear.png) ![pineaple](assets\fruit\pineapple.png) ![strawberry](assets\fruit\strawberry.png) ![watermelon](assets\fruit\watermelon.png)
+![cherry](assets/fruit/cherry.png)![grape](assets/fruit/grape.png) ![kiwi](assets/fruit/kiwi.png) ![lemon](assets/fruit/lemon.png) ![orange](assets/fruit/orange.png) ![pear](assets/fruit/pear.png) ![pineaple](assets/fruit/pineapple.png) ![strawberry](assets/fruit/strawberry.png) ![watermelon](assets/fruit/watermelon.png)
 
 #### Wood
 ![](assets/background/1x/1x/typeWood1.png)
