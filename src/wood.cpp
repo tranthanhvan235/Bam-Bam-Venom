@@ -21,7 +21,7 @@ Wood::Wood()
             }
         }
         posY[i] = 610;
-        posX[i] = -wood[i][0].getWidth();
+        posX[i] = 0;//-wood[i][0].getWidth();
         velX[i] = randVel;
         woodCol[i].setCollision(posX[i], posY[i], wood[0][0].getWidth(), wood[0][0].getHeight());
     }
@@ -50,6 +50,7 @@ void Wood::move(int i)
     {
         std::swap(nextId, curId);
         posX[nextId] = 0;
+        posX[1] = 0;
         //velX[i] = randVel;
         // velX[i] = 1.5; // rand() % maxVel + 1.5;
     }
@@ -61,10 +62,21 @@ void Wood::render(int i)
     wood[i][frame].render(posX[i], posY[i], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
     // woodCol[i].render();
 }
+void Wood::RenderScrollingGround()
+{
+	posX[1] += randVel;
+	 if (posX[1] > SCREEN_WIDTH)
+    {
+		posX[1] = 0;
+    }
+    //wood[i][frame].render(posX[i], posY[i], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
+	wood[1][1].render(posX[1], posY[1], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
+	wood[1][1].render(-wood[1][1].getWidth() + posX[1], posY[1], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
+}
 
 void Wood::curRender(bool isPaused)
 {
-    if (posX[curId] + wood[curId][frame].getWidth() * 3> SCREEN_WIDTH)
+    if (posX[curId] + wood[curId][frame].getWidth()> SCREEN_WIDTH)
     {
         if (!isPaused)
             move(nextId);
@@ -79,14 +91,15 @@ void Wood::generate(bool isPaused)
     if (frame == 2)
         frame = 0;
     
-    if (!isPaused)
-    {
-        move(curId);
-       // timer.unpause();
-    }
-   // else
+//     if (!isPaused)
+//     {
+//         move(1);
+//        // timer.unpause();
+//     }
+//    // else
     //    timer.pause();
-    curRender(isPaused);
+    //curRender(isPaused);
+    RenderScrollingGround();
 }
 
 double Wood::getPosX(int i)

@@ -52,7 +52,7 @@ const int VERSION_POSY = 10;
 const int VERSION_SIZE = 25;
 const int VERSION_WIDTH = 100;
 const int VERSION_HEIGHT = 50;
-const int LEVEL_SIZE = 60;
+const int LEVEL_SIZE = 80;
 
 // Icons
 const int SOUND_POSX = 100;

@@ -106,9 +106,10 @@ void Game::load()
 		loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
 		loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
 		loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
-		loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
+		//loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
+		loadFont(scoreFont, "assets/font/Diane Amorta.otf", SCORE_SIZE);
 		loadFont(highestScoreFont, "assets/font/Lovely Kids.ttf", HIGHEST_SCORE_SIZE);
-		loadFont(levelUpFont, "assets/font/Bethanie Snake_PersonalUseOnly.ttf", LEVEL_SIZE);
+		loadFont(levelUpFont, "assets/font/Groen California Sans.ttf" , LEVEL_SIZE);
 	}
 
 	// Load images
@@ -198,6 +199,9 @@ void Game::gameReset()
 	live = START_LIVE;
 
 	isPaused = false;
+	
+	randVel = rand() % 2 + 1.5;
+	velFrame = 7;
 }
 
 void Game::handlePlayEvent()
@@ -232,11 +236,14 @@ void Game::renderUpLevel()
 
 	// Render
 	gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+   
+	showScore(renderer);
+	showLive(renderer);
 
 	LevelUP.render(SCREEN_WIDTH / 2 - LevelUP.getWidth() / 2, SCREEN_HEIGHT / 2 - LevelUP.getHeight() / 2, LevelUP.getWidth(), LevelUP.getHeight(), NULL);
 	//  Update screen
 	SDL_RenderPresent(renderer);
-	SDL_Delay(1000);
+	SDL_Delay(2000);
 }
 
 void Game::play()
@@ -271,7 +278,6 @@ void Game::play()
 
 				case SDLK_p:
 					isPaused = isPaused xor 1;
-					std::cout << isPaused << '\n';
 					break;
 
 				case SDLK_SPACE:
@@ -315,12 +321,11 @@ void Game::play()
 			velFrame -= 0.5;
 		}
 		// Frame rate
-		// frameTime = SDL_GetTicks() - frameStart;
-		// if (frameTime < DELAY_TIME)
-		// {
-		// 	SDL_Delay(DELAY_TIME - frameTime);
-		// }
-		SDL_Delay(DELAY_TIME);
+		frameTime = SDL_GetTicks() - frameStart;
+		if (frameTime < DELAY_TIME)
+		{
+			SDL_Delay(DELAY_TIME - frameTime);
+		}
 
 		// Change state
 		if (live == 0)
@@ -484,7 +489,6 @@ void Game::menu()
 				{
 				case SDLK_KP_ENTER:
 				case SDLK_RETURN:
-				case SDLK_SPACE:
 					buttons[curId].changeColor(SAND);
 					if (soundState == ON)
 						Mix_PlayChannel(-1, clickSound, 0);
@@ -533,7 +537,7 @@ void Game::menu()
 
 			snakeCute[(int)id].render(SCREEN_WIDTH - 250, SCREEN_HEIGHT - 250, 250, 250, NULL);
 
-			id += 0.2;
+			id += 0.5;
 			if (id > 47)
 				id = 0;
 			// Update screen

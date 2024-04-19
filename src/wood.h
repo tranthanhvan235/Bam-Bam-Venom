@@ -11,6 +11,7 @@ public:
     Wood();
     ~Wood();
     
+    void RenderScrollingGround();
     void render(int i);
     void curRender(bool isPaused);
     void move(int i);
