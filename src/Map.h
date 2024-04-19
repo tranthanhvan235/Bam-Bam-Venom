@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Texture.h"
 #include "Game.h"
 
 class Map
