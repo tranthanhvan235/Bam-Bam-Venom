@@ -28,6 +28,7 @@ public:
     void menu();
     void help();
     void lose();
+    void renderUpLevel();
 
     void quit();
 

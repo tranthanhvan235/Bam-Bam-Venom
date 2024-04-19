@@ -8,6 +8,7 @@ int level;
 int live;
 int highestScore;
 double randVel;
+int velFrame;
 
 int main(int argc, char *args[])
 {

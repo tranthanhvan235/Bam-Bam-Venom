@@ -13,7 +13,7 @@ public:
     Snake();
     ~Snake();
 
-    int SNAKEWIDTH = 250 * 1.5, SNAKEHEIGHT = 250*1.5;
+    int SNAKEWIDTH = 250 * 1.5, SNAKEHEIGHT = 250 * 1.5;
     
     void reset();
     void handleEventSnake(SDL_Event &e);
@@ -46,6 +46,6 @@ public:
     Timer timer;
 
     std::vector<Fruit*> fruit;
-    std::vector<Wood*> wood;
+    Wood* wood;
     Collision snakeCol[5];
 };

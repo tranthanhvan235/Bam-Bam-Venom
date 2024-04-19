@@ -6,7 +6,7 @@ Fruit::Fruit()
 {
     random();
     timer.start();
-    velY = rand() % maxVel + 1;
+    velY = 5;
     posY = 0;
 }
 
@@ -61,7 +61,7 @@ void Fruit::random()
     eaten = 0;
     fruitCol.setCollision(posX, posY, fruit.getWidth() - 50, fruit.getHeight() - 50);
     frame = 0;
-    velX = randVel - 1.2;
+    velX = 0.5;
     posY = -(rand() % 50) - 50;
 }
 
@@ -85,6 +85,7 @@ void Fruit::moveFruit()
     if (posY < 500)
         posY += velY;
     else velX = randVel;
+    
     posX += velX;
 
     if (posX > SCREEN_WIDTH)

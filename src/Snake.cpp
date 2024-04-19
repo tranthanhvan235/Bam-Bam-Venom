@@ -27,7 +27,7 @@ Snake::~Snake()
 void Snake::reset()
 {
    fruit.clear();
-   wood.clear();
+   free(wood);
    randLevel();
 }
 void Snake::handleEventSnake(SDL_Event &e)
@@ -36,8 +36,8 @@ void Snake::handleEventSnake(SDL_Event &e)
 
 void Snake::randLevel()
 {
-  woodSize = rand() % 5 + 4;
-  fruitSize = rand() % (woodSize - 3) + 3;
+  wood = new Wood();
+  fruitSize = rand() % 5 + 3;
 
   for (int i = 0; i < fruitSize; i++)
   {
@@ -50,17 +50,8 @@ void Snake::randLevel()
     }
     fruit.push_back(newFruit);
   }
-  woodSize = 13;
-  for (int i = 0; i < woodSize; i++)
-  {
-    Wood *newWood = new Wood();
-    if (wood.size())
-    {
-      newWood->posX = wood[wood.size() - 1]->posX - newWood->SIZEW;
-    }
-    wood.push_back(newWood);
-  }
 }
+
 void Snake::updateGame()
 {
   if (frame == 4 && goingDown)
@@ -87,15 +78,16 @@ int Snake::checkCollision()
   for (int i = 0; i < fruitSize; i++)
     if (fruit[i]->checkCollision(snakeCol[frame]))
     {
-      immortal = 5;
+      //immortal = 5;
+      frame = 0;
+      goingUp = true;
       return 1;
     }
-  for (int i = 0; i < woodSize; i++)
-    if (wood[i]->checkCollision(snakeCol[frame]))
+    if (wood->checkCollision(snakeCol[frame]))
     {
-      immortal--;
-      if (immortal)
-        return 0;
+      //immortal--;
+      //if (immortal)
+      //  return 0;
       Mix_PlayChannel(-1, varSound, 0);
       return 2;
     }
@@ -104,8 +96,7 @@ int Snake::checkCollision()
 
 void Snake::render(bool isPaused)
 {
-  for (int i = 0; i < woodSize; i++)
-    wood[i]->generate(isPaused);
+  wood->generate(isPaused);
   for (int i = 0; i < fruitSize; i++)
     fruit[i]->generate(isPaused);
 
@@ -115,7 +106,7 @@ void Snake::render(bool isPaused)
   else
     timer.unpause();
 
-  if (timer.get_ticks() % 3 == 0)
+  if (timer.get_ticks() % 2 == 0)
   {
     frame += velFrame;
   }

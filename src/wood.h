@@ -10,23 +10,24 @@ class Wood
 public:
     Wood();
     ~Wood();
-
-    void random();
-    void render();
-    void move();
+    
+    void render(int i);
+    void curRender(bool isPaused);
+    void move(int i);
     void generate(bool isPaused);
-    double getPosX();
-    double getPosY();
+    double getPosX(int i);
+    double getPosY(int i);
+    double getWidth(int i);
+    double getHeight(int i);
     bool checkCollision(const Collision &x);
-    Collision getCol();
-    int SIZEW = 113;
-    double posX, posY;
+    Collision getCol(int i);
+    int curId = 0, nextId = 1;
 
 private:
-    double velX, velY;
+    double posX[2], posY[2];
+    double velX[2], velY[2];
     int frame;
-    Texture wood;
+    Texture wood[2][2];
     Timer timer;
-    Collision woodCol;
-    SDL_Rect clips[5];
+    Collision woodCol[2];
 };

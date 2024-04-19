@@ -6,6 +6,7 @@ Game::Game()
 {
 	gameState = MENU;
 	randVel = rand() % 2 + 1.5;
+	velFrame = 7;
 }
 Game::~Game()
 {
@@ -222,6 +223,22 @@ void Game::handlePlayEvent()
 	}
 }
 
+void Game::renderUpLevel()
+{
+	// Clear screen
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
+	SDL_RenderClear(renderer);
+
+	// Render
+	gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+
+	LevelUP.render(SCREEN_WIDTH / 2 - LevelUP.getWidth() / 2, SCREEN_HEIGHT / 2 - LevelUP.getHeight() / 2, LevelUP.getWidth(), LevelUP.getHeight(), NULL);
+	//  Update screen
+	SDL_RenderPresent(renderer);
+	SDL_Delay(1000);
+}
+
 void Game::play()
 {
 	Uint32 frameStart, frameTime;
@@ -274,41 +291,36 @@ void Game::play()
 
 		// Clear screen
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		// SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
+		SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
 		SDL_RenderClear(renderer);
 
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
-		if (isLevelUp)
-		{
-			snake->reset();
-			isLevelUp--;
-			if(isLevelUp == 0)  isPaused = false;
-			LevelUP.render(SCREEN_WIDTH / 2 - LevelUP.getWidth() / 2, SCREEN_HEIGHT / 2 - LevelUP.getHeight() / 2, LevelUP.getWidth(), LevelUP.getHeight(), NULL);
-		}
 		snake->render(isPaused);
 
 		showScore(renderer);
 		showLive(renderer);
 
-		if (isPaused && !isLevelUp)
+		if (isPaused)
 			paused.render(SCREEN_WIDTH / 2 - paused.getWidth() / 2, SCREEN_HEIGHT / 2 - paused.getHeight() / 2, paused.getWidth(), paused.getHeight(), NULL);
-		if (levelUp())
-		{
-			isLevelUp = 5;
-			isPaused = true;
-			randVel++;
-		}
+
 		//  Update screen
 		SDL_RenderPresent(renderer);
 
-		// Frame rate
-		frameTime = SDL_GetTicks() - frameStart;
-		if (frameTime < DELAY_TIME)
+		if (levelUp())
 		{
-			SDL_Delay(DELAY_TIME - frameTime);
+			renderUpLevel();
+			randVel++;
+			velFrame -= 0.5;
 		}
+		// Frame rate
+		// frameTime = SDL_GetTicks() - frameStart;
+		// if (frameTime < DELAY_TIME)
+		// {
+		// 	SDL_Delay(DELAY_TIME - frameTime);
+		// }
+		SDL_Delay(DELAY_TIME);
 
 		// Change state
 		if (live == 0)
