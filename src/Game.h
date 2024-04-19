@@ -1,9 +1,18 @@
-#pragma once 
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <ctime>
 
 #include <SDL.h>
 #include <SDL_image.h>
-#include <iostream>
-#include <vector>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
+
+#include "Texture.h"
+#include "const.h"
+#include "Res.h"
+#include "ultils.h"
 
 class ColliderComponent;
 class Game
@@ -12,20 +21,37 @@ public:
     Game();
     ~Game();
 
-    void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen);
+    bool init();
+    void load();
 
-    void handleEvents();
-    void update();
-    bool running() { return isRunning; };
-    void render();
-    void clean();
+    void play();
+    void menu();
+    void help();
+    void lose();
+    void renderUpLevel();
 
-    static SDL_Renderer *renderer;
+    void quit();
+
+    void gameReset();
+    void menuReset();
+
+    void handlePlayEvent();
+
+    void setGameState(const int &state);
+    void manageState();
+
     static SDL_Event event;
-    static std::vector<ColliderComponent*> colliders;
+    static SDL_Renderer *renderer;
+    //static std::vector<ColliderComponent*> colliders;
+
 private:
-    int cnt = 0;
-    bool isRunning;
+    int gameState;
+    int isLevelUp;
+    bool musicState = ON;
+    bool soundState = ON;
+    bool isPaused = false;
+
+	int curId = 0;
+    bool loop = true;
     SDL_Window *window;
 };
-
