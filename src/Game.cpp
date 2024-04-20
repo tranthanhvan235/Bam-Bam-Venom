@@ -106,10 +106,10 @@ void Game::load()
 		loadFont(menuFont, "assets/font/india snake pixel labyrinth game_3d.otf", MENU_SIZE);
 		loadFont(titleFont, "assets/font/Snake Chan.ttf", TITLE_SIZE);
 		loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
-		//loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
+		// loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
 		loadFont(scoreFont, "assets/font/Diane Amorta.otf", SCORE_SIZE);
 		loadFont(highestScoreFont, "assets/font/Lovely Kids.ttf", HIGHEST_SCORE_SIZE);
-		loadFont(levelUpFont, "assets/font/Groen California Sans.ttf" , LEVEL_SIZE);
+		loadFont(levelUpFont, "assets/font/Groen California Sans.ttf", LEVEL_SIZE);
 	}
 
 	// Load images
@@ -199,9 +199,24 @@ void Game::gameReset()
 	live = START_LIVE;
 
 	isPaused = false;
-	
+
 	randVel = rand() % 2 + 1.5;
 	velFrame = 7;
+	fruit.clear();
+
+	wood = new Wood();
+	int fruitSize = rand() % 5 + 3;
+
+	for (int i = 0; i < fruitSize; i++)
+	{
+		Fruit *newFruit = new Fruit();
+		if (fruit.size())
+		{
+			newFruit->posX = fruit[fruit.size() - 1]->posX - newFruit->getWidth() - (i + 1) * rand() % 20;
+			newFruit->posY = fruit[fruit.size() - 1]->posY - newFruit->getHeight() * i;
+		}
+		fruit.push_back(newFruit);
+	}
 }
 
 void Game::handlePlayEvent()
@@ -227,6 +242,30 @@ void Game::handlePlayEvent()
 	}
 }
 
+int Game::checkCollision()
+ {
+	Collision curCol = wood->getCol(1);
+	Collision snakeCol = snake->getCol();
+	//return 0;
+	
+	//std::cout << snake->frame << '\n';
+	return 0;
+	// for (int i = 0; i < fruit.size(); i++)
+	// 	if (fruit[i]->checkCollision(curCol))
+	// 	{
+	// 		snake->frame = 0;
+	// 		snake->goingUp = true;
+	// 		//fruit.erase(fruit.begin() + i);
+	// 		return 1;
+	// 	}
+	
+	// if (wood->checkCollision(curCol))
+	// {
+	// 	Mix_PlayChannel(-1, varSound, 0);
+	// 	return 2;
+	// }
+	// return 0;
+}
 void Game::renderUpLevel()
 {
 	// Clear screen
@@ -236,7 +275,7 @@ void Game::renderUpLevel()
 
 	// Render
 	gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-   
+
 	showScore(renderer);
 	showLive(renderer);
 
@@ -268,7 +307,7 @@ void Game::play()
 				gameState = QUIT;
 				break;
 			}
-			if (event.type == SDL_KEYDOWN)
+			if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
 			{
 				switch (event.key.keysym.sym)
 				{
@@ -286,9 +325,9 @@ void Game::play()
 						break;
 					if (!snake->goingDown && !snake->goingUp)
 						snake->goingDown = true;
-					if (snake->frame == 0 && SDL_GetTicks() % 2)
-						if (soundState)
-							Mix_PlayChannel(-1, jumpSound, 0);
+					//if (snake->frame == 0 && !snake->goingDown)
+					//	if (soundState)
+					//		Mix_PlayChannel(-1, jumpSound, 0);
 					break;
 				}
 			}
@@ -303,7 +342,13 @@ void Game::play()
 		// Render
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
+		wood->generate(isPaused);
+		for (auto &eFruit : fruit)
+			eFruit->generate(isPaused);
 		snake->render(isPaused);
+
+		if (checkCollision() == 2)
+			live--;
 
 		showScore(renderer);
 		showLive(renderer);
@@ -316,7 +361,7 @@ void Game::play()
 
 		if (levelUp())
 		{
-			renderUpLevel();
+			//renderUpLevel();
 			randVel++;
 			velFrame -= 0.5;
 		}

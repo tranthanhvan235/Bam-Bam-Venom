@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <deque>
 #include <ctime>
 
 #include <SDL.h>
@@ -13,6 +14,9 @@
 #include "const.h"
 #include "Res.h"
 #include "ultils.h"
+#include "Fruit.h"
+#include "wood.h"
+#include "Snake.h"
 
 class ColliderComponent;
 class Game
@@ -54,4 +58,10 @@ private:
 	int curId = 0;
     bool loop = true;
     SDL_Window *window;
+
+    std::deque<Fruit*> fruit;
+    Wood* wood;
+    Snake* snake;
+
+    int checkCollision();
 };

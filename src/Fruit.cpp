@@ -1,5 +1,4 @@
 #include "Fruit.h"
-#include "Game.h"
 
 // Constructor and destructor
 Fruit::Fruit()
@@ -65,6 +64,11 @@ void Fruit::random()
     posY = -(rand() % 50) - 50;
 }
 
+void handleEvent(SDL_Event &e)
+{
+
+}
+
 bool Fruit::checkCollision(const Collision &x)
 {
     if(fruitCol.checkCollision(x))
@@ -72,9 +76,6 @@ bool Fruit::checkCollision(const Collision &x)
         eaten = true;
         score += 10;
 		Mix_PlayChannel(-1, eatSound, 0);
-        random();
-        posX = -fruit.getWidth() + rand() % 100;
-        posY = 0;
         return 1;
     }
     return 0;

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Fruit.h"
-#include "wood.h"
+#include "const.h"
+#include "Timer.h"
+#include "Res.h"
 #include "Collision.h"
-
-#include <vector>
 
 class Snake
 {
@@ -19,9 +18,7 @@ public:
     void handleEventSnake(SDL_Event &e);
     void updateGame();
 
-    void randLevel();
-
-    int checkCollision();
+    Collision getCol();
     
     void render(bool isPaused);
 
@@ -34,18 +31,14 @@ public:
     //Velocity
     int sVelX, sVelY;
 
-    int frame = 0, velFrame = 1;
+    int velFrame = 1;
+
     int immortal = 3;
-    int var;
-    int fruitSize, woodSize;
     
+private:
     Texture snake;
     SDL_Rect snakeClips[5];
-    
-    Timer time;
     Timer timer;
-
-    std::vector<Fruit*> fruit;
-    Wood* wood;
     Collision snakeCol[5];
+    int frame;
 };

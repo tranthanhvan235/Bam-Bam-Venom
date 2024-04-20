@@ -1,5 +1,4 @@
 #include "wood.h"
-#include "Game.h"
 
 Wood::Wood()
 {
@@ -62,16 +61,17 @@ void Wood::render(int i)
     wood[i][frame].render(posX[i], posY[i], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
     // woodCol[i].render();
 }
-void Wood::RenderScrollingGround()
+void Wood::RenderScrollingGround(bool isPaused)
 {
+    if(!isPaused)
 	posX[1] += randVel;
 	 if (posX[1] > SCREEN_WIDTH)
     {
 		posX[1] = 0;
     }
     //wood[i][frame].render(posX[i], posY[i], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
-	wood[1][1].render(posX[1], posY[1], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
-	wood[1][1].render(-wood[1][1].getWidth() + posX[1], posY[1], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
+	wood[1][frame].render(posX[1], posY[1], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
+	wood[1][frame].render(-wood[1][1].getWidth() + posX[1], posY[1], wood[0][0].getWidth(), wood[0][0].getHeight(), NULL);
 }
 
 void Wood::curRender(bool isPaused)
@@ -86,10 +86,11 @@ void Wood::curRender(bool isPaused)
 }
 void Wood::generate(bool isPaused)
 {
-    if (timer.get_ticks() % 5 == 0)
+    if(!isPaused)
+    {if (timer.get_ticks() % 5 == 0)
         frame++;
     if (frame == 2)
-        frame = 0;
+        frame = 0;}
     
 //     if (!isPaused)
 //     {
@@ -99,7 +100,7 @@ void Wood::generate(bool isPaused)
 //    // else
     //    timer.pause();
     //curRender(isPaused);
-    RenderScrollingGround();
+    RenderScrollingGround(isPaused);
 }
 
 double Wood::getPosX(int i)
