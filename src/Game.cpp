@@ -87,17 +87,17 @@ void Game::load()
 	// Load music
 	{
 		loadMusic(music, "assets/sound/song.ogg");
+		//loadMusic(helpMusic, "assets/sound/clickSound.wav");
 		loadSound(clickSound, "assets/sound/button_push.wav");
 		loadSound(music_soundClick, "assets/sound/sound_musicClick.wav");
 		loadSound(jumpSound, "assets/sound/jump.wav");
 		loadSound(fruitDown, "assets/sound/fruit_down.wav");
 		// loadSound(leaveSound, "assets/sounds/leave_sound.wav");
-		loadSound(levelSound, "assets/sound/background-audio_script_sound.wav");
+		loadSound(levelSound, "assets/sound/Level up.wav");
 		loadSound(varSound, "assets/sound/snake_var.wav");
 		loadSound(loseSound, "assets/sound/loseSound.wav");
 		loadSound(eatSound, "assets/sound/gotScore.wav");
 		loadSound(transSound, "assets/sound/trans.wav");
-		// loadSound(wasteSound, "assets/sounds/waste_sound.wav");
 		// loadSound(warningSound, "assets/sounds/warning_sound.wav");
 	}
 
@@ -244,7 +244,7 @@ void Game::handlePlayEvent()
 }
 
 int Game::checkCollision()
- {
+{
 	Collision snakeCol = snake->getCol();
 	for (int i = 0; i < fruit.size(); i++)
 		if (fruit[i]->checkCollision(snakeCol))
@@ -254,7 +254,7 @@ int Game::checkCollision()
 			fruit.erase(fruit.begin() + i);
 			return 1;
 		}
-	
+
 	if (wood->checkCollision(snakeCol))
 	{
 		Mix_PlayChannel(-1, varSound, 0);
@@ -284,7 +284,6 @@ void Game::renderUpLevel()
 void Game::play()
 {
 	Uint32 frameStart, frameTime;
-	//Snake *snake = new Snake();
 
 	gameReset();
 
@@ -303,7 +302,7 @@ void Game::play()
 				gameState = QUIT;
 				break;
 			}
-			if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+			if (event.type == SDL_KEYDOWN)
 			{
 				switch (event.key.keysym.sym)
 				{
@@ -323,7 +322,7 @@ void Game::play()
 						snake->goingDown = true;
 					if (snake->frame == 0 && !snake->goingDown)
 						if (soundState)
-						Mix_PlayChannel(-1, jumpSound, 0);
+							Mix_PlayChannel(-1, jumpSound, 0);
 					break;
 				}
 			}
@@ -342,7 +341,7 @@ void Game::play()
 		for (auto &eFruit : fruit)
 			eFruit->generate(isPaused);
 		snake->render(isPaused);
-        if (checkCollision() == 2)
+		if (checkCollision() == 2)
 			live--;
 
 		showScore(renderer);
@@ -356,7 +355,7 @@ void Game::play()
 
 		if (levelUp())
 		{
-			//renderUpLevel();
+			renderUpLevel();
 			randVel++;
 			velFrame -= 0.5;
 		}
@@ -638,7 +637,7 @@ void Game::help()
 
 		// Render
 		helpground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-
+        
 		// Update screen
 		SDL_RenderPresent(renderer);
 

@@ -8,8 +8,8 @@ Texture title, version, paused, LevelUP; // Title texture
 Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
 Texture snakeCute[51];
 
-Mix_Music *music;
-Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *wasteSound, *warningSound, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
+Mix_Music *music, *helpMusic;
+Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *warningSound, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
 
 const char *menuText[NUM_BUTTONS] = {"Play", "Help", "Quit"}; // Menu text
 

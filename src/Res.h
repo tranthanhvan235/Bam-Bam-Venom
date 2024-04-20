@@ -17,8 +17,8 @@ extern Texture title, version, paused, LevelUP; // Title texture
 extern Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart; // Background texture
 extern Texture snakeCute[51];
 
-extern Mix_Music *music;
-extern Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *wasteSound, *warningSound, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
+extern Mix_Music *music, *helpMusic;
+extern Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *warningSound, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
 
 extern const char *menuText[NUM_BUTTONS];// Menu text
 
