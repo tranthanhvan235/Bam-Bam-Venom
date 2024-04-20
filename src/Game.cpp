@@ -217,6 +217,7 @@ void Game::gameReset()
 		}
 		fruit.push_back(newFruit);
 	}
+	snake = new Snake();
 }
 
 void Game::handlePlayEvent()
@@ -244,27 +245,22 @@ void Game::handlePlayEvent()
 
 int Game::checkCollision()
  {
-	Collision curCol = wood->getCol(1);
 	Collision snakeCol = snake->getCol();
-	//return 0;
+	for (int i = 0; i < fruit.size(); i++)
+		if (fruit[i]->checkCollision(snakeCol))
+		{
+			snake->frame = 0;
+			snake->goingUp = true;
+			fruit.erase(fruit.begin() + i);
+			return 1;
+		}
 	
-	//std::cout << snake->frame << '\n';
+	if (wood->checkCollision(snakeCol))
+	{
+		Mix_PlayChannel(-1, varSound, 0);
+		return 2;
+	}
 	return 0;
-	// for (int i = 0; i < fruit.size(); i++)
-	// 	if (fruit[i]->checkCollision(curCol))
-	// 	{
-	// 		snake->frame = 0;
-	// 		snake->goingUp = true;
-	// 		//fruit.erase(fruit.begin() + i);
-	// 		return 1;
-	// 	}
-	
-	// if (wood->checkCollision(curCol))
-	// {
-	// 	Mix_PlayChannel(-1, varSound, 0);
-	// 	return 2;
-	// }
-	// return 0;
 }
 void Game::renderUpLevel()
 {
@@ -288,7 +284,7 @@ void Game::renderUpLevel()
 void Game::play()
 {
 	Uint32 frameStart, frameTime;
-	Snake *snake = new Snake();
+	//Snake *snake = new Snake();
 
 	gameReset();
 
@@ -325,9 +321,9 @@ void Game::play()
 						break;
 					if (!snake->goingDown && !snake->goingUp)
 						snake->goingDown = true;
-					//if (snake->frame == 0 && !snake->goingDown)
-					//	if (soundState)
-					//		Mix_PlayChannel(-1, jumpSound, 0);
+					if (snake->frame == 0 && !snake->goingDown)
+						if (soundState)
+						Mix_PlayChannel(-1, jumpSound, 0);
 					break;
 				}
 			}
@@ -346,8 +342,7 @@ void Game::play()
 		for (auto &eFruit : fruit)
 			eFruit->generate(isPaused);
 		snake->render(isPaused);
-
-		if (checkCollision() == 2)
+        if (checkCollision() == 2)
 			live--;
 
 		showScore(renderer);

@@ -9,6 +9,8 @@ Snake::Snake()
     snakeClips[i] = {i * 1600, 0, 1600, 1600};
     snakeCol[i].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + i * (i - 1) * (i - 2) * 20 + SNAKEHEIGHT / 2, 50, 50);
   }
+  
+  frame = 0;
 
   snakeCol[0].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2, 50, 50);
   snakeCol[1].setCollision(sPosX + SNAKEWIDTH / 3, sPosY + SNAKEHEIGHT / 2 + 20, 50, 50);
@@ -65,12 +67,12 @@ void Snake::render(bool isPaused)
 
   SDL_Rect *currentClip = &snakeClips[frame];
   snake.render(sPosX, sPosY, SNAKEWIDTH, SNAKEHEIGHT, currentClip, NULL);
-  snakeCol[frame].render();
+  //snakeCol[frame].render();
 }
 
 Collision Snake::getCol()
 {
-  std::cout << frame << '\n';
+  //std::cout << frame << '\n';
   // if(frame == 5) std::cout << "bug here\n";
-  return snakeCol[0];
+  return snakeCol[frame];
 }

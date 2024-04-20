@@ -31,7 +31,7 @@ public:
     //Velocity
     int sVelX, sVelY;
 
-    int velFrame = 1;
+    int velFrame = 1, frame;
 
     int immortal = 3;
     
@@ -40,5 +40,4 @@ private:
     SDL_Rect snakeClips[5];
     Timer timer;
     Collision snakeCol[5];
-    int frame;
 };
