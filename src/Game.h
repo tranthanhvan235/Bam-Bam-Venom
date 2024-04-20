@@ -63,5 +63,7 @@ private:
     Wood* wood;
     Snake* snake;
 
+    bool addFruit = false;
+
     int checkCollision();
 };

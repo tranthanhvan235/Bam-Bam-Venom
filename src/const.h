@@ -99,8 +99,9 @@ const int LIVE_HEIGHT = 30;
 // Level
 const int MIN_LEVEL = 1;
 const int MAX_LEVEL = 5;
-const int LEVEL_POINT[] = {0, 20, 50, 100, 150};
+// const int LEVEL_POINT[] = {0, 50, 100, 250, 350, 700};
 
+const int LEVEL_POINT[] = {0, 10, 20, 30, 40, 50};
 // FRUIT VARIABLES
 const int NUM_FRUIT = 10;
 

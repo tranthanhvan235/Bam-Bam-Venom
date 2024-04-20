@@ -5,7 +5,7 @@ Fruit::Fruit()
 {
     random();
     timer.start();
-    velY = 5;
+    velY = randVel + 2;
     posY = 0;
 }
 
@@ -92,6 +92,8 @@ void Fruit::moveFruit()
     if (posX > SCREEN_WIDTH)
     {
         posX = -fruit.getWidth();
+        posY = 0;
+        velY = randVel + 2;
     }
 }
 // Render

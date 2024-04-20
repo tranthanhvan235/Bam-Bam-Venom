@@ -59,10 +59,15 @@ void showHighestScore(SDL_Renderer *renderer)
 
 bool levelUp()
 {
+	if(score >= LEVEL_POINT[level] && level == MAX_LEVEL)
+	{
+		level++;
+		Mix_PlayChannel(-1, externalTime, 0);
+		return false;
+	}
 	if (score >= LEVEL_POINT[level] && level < MAX_LEVEL)
 	{
 		level++;
-		
 		Mix_PlayChannel(-1, levelSound, 0);
 		return true;
 	}

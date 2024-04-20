@@ -9,7 +9,7 @@ Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soun
 Texture snakeCute[51];
 
 Mix_Music *music, *helpMusic;
-Mix_Chunk *music_soundClick, *clickSound, *leaveSound, *levelSound, *loseSound, *eatSound, *warningSound, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
+Mix_Chunk *music_soundClick, *clickSound, *externalTime, *levelSound, *loseSound, *eatSound, *warningSound, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
 
 const char *menuText[NUM_BUTTONS] = {"Play", "Help", "Quit"}; // Menu text
 

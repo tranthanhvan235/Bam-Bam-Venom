@@ -87,12 +87,12 @@ void Game::load()
 	// Load music
 	{
 		loadMusic(music, "assets/sound/song.ogg");
-		//loadMusic(helpMusic, "assets/sound/clickSound.wav");
+		// loadMusic(helpMusic, "assets/sound/clickSound.wav");
 		loadSound(clickSound, "assets/sound/button_push.wav");
 		loadSound(music_soundClick, "assets/sound/sound_musicClick.wav");
 		loadSound(jumpSound, "assets/sound/jump.wav");
 		loadSound(fruitDown, "assets/sound/fruit_down.wav");
-		// loadSound(leaveSound, "assets/sounds/leave_sound.wav");
+		loadSound(externalTime, "assets/sound/External Time.wav");
 		loadSound(levelSound, "assets/sound/Level up.wav");
 		loadSound(varSound, "assets/sound/snake_var.wav");
 		loadSound(loseSound, "assets/sound/loseSound.wav");
@@ -245,15 +245,21 @@ void Game::handlePlayEvent()
 
 int Game::checkCollision()
 {
+	int snake_fruit = -1; // index fruit var snake if = -1 not var
 	Collision snakeCol = snake->getCol();
 	for (int i = 0; i < fruit.size(); i++)
 		if (fruit[i]->checkCollision(snakeCol))
 		{
-			snake->frame = 0;
-			snake->goingUp = true;
-			fruit.erase(fruit.begin() + i);
-			return 1;
+			snake_fruit = i;
+			break;
 		}
+	if (snake_fruit != -1)
+	{
+		snake->frame = 0;
+		snake->goingUp = true;
+		fruit.erase(fruit.begin() + snake_fruit);
+		return 1;
+	}
 
 	if (wood->checkCollision(snakeCol))
 	{
@@ -271,6 +277,11 @@ void Game::renderUpLevel()
 
 	// Render
 	gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+
+	wood->generate(1);
+	for (auto &eFruit : fruit)
+		eFruit->generate(1);
+	snake->render(1);
 
 	showScore(renderer);
 	showLive(renderer);
@@ -313,6 +324,9 @@ void Game::play()
 				case SDLK_p:
 					isPaused = isPaused xor 1;
 					break;
+				case SDLK_s:
+					addFruit = true;
+					break;
 
 				case SDLK_SPACE:
 				case SDLK_DOWN:
@@ -338,6 +352,12 @@ void Game::play()
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
 		wood->generate(isPaused);
+		if (addFruit)
+		{
+			Fruit *newFruit = new Fruit();
+			fruit.push_back(newFruit);
+			addFruit = false;
+		}
 		for (auto &eFruit : fruit)
 			eFruit->generate(isPaused);
 		snake->render(isPaused);
@@ -637,7 +657,7 @@ void Game::help()
 
 		// Render
 		helpground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-        
+
 		// Update screen
 		SDL_RenderPresent(renderer);
 
