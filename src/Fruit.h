@@ -24,6 +24,7 @@ public:
     double getPosY();
     double getWidth();
     double getHeight();
+    int getType();
     Collision getCol();
     bool checkCollision(const Collision &x);
     int eaten = false;
@@ -35,4 +36,5 @@ private:
     Timer timer;
     Texture fruit; 
     Collision fruitCol;
+    int type;
 };

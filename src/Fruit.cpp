@@ -14,8 +14,9 @@ Fruit::~Fruit()
 }
 void Fruit::random()
 {
-    int i = rand() % 9 + 1;
-    
+    int i = rand() % NUM_FRUIT + 1 ;
+    type = i;
+    //std::cout << type << '\n';
     switch (i)
     {
     case GRAPE:
@@ -54,6 +55,14 @@ void Fruit::random()
         loadImage(fruit, "assets/fruit/orange.png");
         break;
 
+    case BOMB:
+        loadImage(fruit, "assets/fruit/bomb.png");
+        break;
+
+    case IMMORTAL:
+        loadImage(fruit, "assets/fruit/immortal.png");
+        break;
+
     default:
         break;
     }
@@ -66,7 +75,7 @@ void Fruit::random()
 
 void handleEvent(SDL_Event &e)
 {
-
+    
 }
 
 bool Fruit::checkCollision(const Collision &x)
@@ -74,8 +83,6 @@ bool Fruit::checkCollision(const Collision &x)
     if(fruitCol.checkCollision(x))
     {
         eaten = true;
-        score += 10;
-		Mix_PlayChannel(-1, eatSound, 0);
         return 1;
     }
     return 0;
@@ -83,8 +90,17 @@ bool Fruit::checkCollision(const Collision &x)
 
 void Fruit::moveFruit()
 {
-    if (posY < 500)
-        posY += velY;
+    int onGround = 500;
+    if(type == BOMB) onGround -= 45;
+    if (posY < onGround)
+        {
+            posY += velY;
+            if(posY >= onGround && posX >= 0)
+            {
+                Mix_PlayChannel(-1, fruitDown, 0);
+            }
+   
+        }
     else velX = randVel;
     
     posX += velX;
@@ -133,4 +149,9 @@ double Fruit::getHeight()
 Collision Fruit::getCol()
 {
     return fruitCol;
+}
+
+int Fruit::getType()
+{
+    return type;
 }

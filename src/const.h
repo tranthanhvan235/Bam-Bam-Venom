@@ -11,13 +11,14 @@ extern int velFrame;
 
 // WINDOWS VARIABLES
 // Screen size
+const int  SCREEN_WIDTH = 1366;
+const int  SCREEN_HEIGHT = 768;
+
 const char WINDOW_TITLE[] = "Bam Bam Venom";
 const char VERSION_INFO[] = "VERSION: 1.0";
 const char PAUSED_GAME[] = "Pause";
 const char LEVEL_UP[] = "LEVEL UP !";
-
-const int  SCREEN_WIDTH = 1366;
-const int  SCREEN_HEIGHT = 768;
+const char EXTERNAL_TIME[] = "EXTERNAL TIME !";
 
 //Frame rate
 const int FPS = 60;
@@ -96,14 +97,18 @@ const int LIVE_DISTANCE = 40;
 const int LIVE_WIDTH = 30;
 const int LIVE_HEIGHT = 30;
 
+// Immortal
+const int IMMORTAL_POSX = SCREEN_WIDTH/2;
+const int IMMORTAL_POSY = 10;
+
 // Level
 const int MIN_LEVEL = 1;
-const int MAX_LEVEL = 5;
+const int MAX_LEVEL = 6;
 // const int LEVEL_POINT[] = {0, 50, 100, 250, 350, 700};
 
-const int LEVEL_POINT[] = {0, 10, 20, 30, 40, 50};
+const int LEVEL_POINT[] = {0, 10, 20, 30, 40, 50, 100};
 // FRUIT VARIABLES
-const int NUM_FRUIT = 10;
+const int NUM_FRUIT = 11;
 
 // Fruit type
 enum fruitType
@@ -117,7 +122,9 @@ enum fruitType
 	KIWI = 6,
 	STRAWBERRY = 7,
 	PEAR = 8,
-	ORANGE = 9
+	ORANGE = 9, 
+	BOMB = 10,
+	IMMORTAL = 11
 };
 
 const int maxVel = 2;

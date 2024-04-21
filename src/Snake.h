@@ -5,6 +5,8 @@
 #include "Res.h"
 #include "Collision.h"
 
+#define MAX_IMMORTAL_TIME 500
+
 class Snake
 {
 public:
@@ -32,8 +34,9 @@ public:
     int sVelX, sVelY;
 
     int velFrame = 1, frame;
-
-    int immortal = 3;
+    
+    int immortalTime = 0;
+    bool isImmortal();
     
 private:
     Texture snake;

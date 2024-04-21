@@ -76,3 +76,15 @@ Collision Snake::getCol()
   // if(frame == 5) std::cout << "bug here\n";
   return snakeCol[frame];
 }
+
+bool Snake::isImmortal()
+{
+    if(immortalTime == MAX_IMMORTAL_TIME) return false;
+    
+    immortalTime++;
+    if(abs(immortalTime - MAX_IMMORTAL_TIME) == 80)
+    { 
+      Mix_PlayChannel(-1, endImmortalTime, 0);
+    }
+    return true;
+}

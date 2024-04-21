@@ -54,7 +54,7 @@ private:
     bool musicState = ON;
     bool soundState = ON;
     bool isPaused = false;
-
+    bool isImmortal = false;
 	int curId = 0;
     bool loop = true;
     SDL_Window *window;
@@ -65,5 +65,5 @@ private:
 
     bool addFruit = false;
 
-    int checkCollision();
+    int checkCollision(bool immortal);
 };

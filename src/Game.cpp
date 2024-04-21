@@ -98,7 +98,7 @@ void Game::load()
 		loadSound(loseSound, "assets/sound/loseSound.wav");
 		loadSound(eatSound, "assets/sound/gotScore.wav");
 		loadSound(transSound, "assets/sound/trans.wav");
-		// loadSound(warningSound, "assets/sounds/warning_sound.wav");
+		loadSound(endImmortalTime, "assets/sound/endImmortalTime_1.wav");
 	}
 
 	// Load font
@@ -146,7 +146,8 @@ void Game::load()
 			strcat(path, tail);
 			loadImage(snakeCute[i], path);
 		}
-		// loadImage(renderer, stand, "assets/images/stand.png");
+		loadImage(immortalOn, "assets/icon/immortalOn.png");
+		loadImage(immortalOff, "assets/icon/immortalOff.png");
 		loadImage(loseground, "assets/background/loseGround.png");
 		loadImage(heart, "assets/menu/heart.png");
 		/*
@@ -243,7 +244,7 @@ void Game::handlePlayEvent()
 	}
 }
 
-int Game::checkCollision()
+int Game::checkCollision(bool immortal)
 {
 	int snake_fruit = -1; // index fruit var snake if = -1 not var
 	Collision snakeCol = snake->getCol();
@@ -257,11 +258,26 @@ int Game::checkCollision()
 	{
 		snake->frame = 0;
 		snake->goingUp = true;
+
+		int type = fruit[snake_fruit]->getType();
 		fruit.erase(fruit.begin() + snake_fruit);
+
+		if (type == BOMB && !immortal)
+		{
+			Mix_PlayChannel(-1, varSound, 0);
+			return 2;
+		}
+
+		if (type == IMMORTAL)
+			snake->immortalTime = 0;
+        
+		if(type != BOMB)
+		score += 10;
+		Mix_PlayChannel(-1, eatSound, 0);
 		return 1;
 	}
 
-	if (wood->checkCollision(snakeCol))
+	if (wood->checkCollision(snakeCol) && !immortal)
 	{
 		Mix_PlayChannel(-1, varSound, 0);
 		return 2;
@@ -285,7 +301,12 @@ void Game::renderUpLevel()
 
 	showScore(renderer);
 	showLive(renderer);
-
+    if(level == MAX_LEVEL + 1)
+	{
+		LevelUP.loadFromRenderedText(EXTERNAL_TIME, WHITE, levelUpFont);
+	}
+	else LevelUP.loadFromRenderedText(LEVEL_UP, WHITE, levelUpFont);
+	
 	LevelUP.render(SCREEN_WIDTH / 2 - LevelUP.getWidth() / 2, SCREEN_HEIGHT / 2 - LevelUP.getHeight() / 2, LevelUP.getWidth(), LevelUP.getHeight(), NULL);
 	//  Update screen
 	SDL_RenderPresent(renderer);
@@ -333,10 +354,12 @@ void Game::play()
 					if (isPaused)
 						break;
 					if (!snake->goingDown && !snake->goingUp)
-						snake->goingDown = true;
-					if (snake->frame == 0 && !snake->goingDown)
-						if (soundState)
+						{
+							snake->goingDown = true;
+							if (soundState)
 							Mix_PlayChannel(-1, jumpSound, 0);
+					
+						}
 					break;
 				}
 			}
@@ -361,7 +384,18 @@ void Game::play()
 		for (auto &eFruit : fruit)
 			eFruit->generate(isPaused);
 		snake->render(isPaused);
-		if (checkCollision() == 2)
+
+		bool immortal = snake->isImmortal();
+		if (immortal)
+		{
+			immortalOn.render(IMMORTAL_POSX, IMMORTAL_POSY, immortalOn.getWidth(), immortalOn.getHeight(), NULL);
+		}
+		else
+		{
+			immortalOff.render(IMMORTAL_POSX, IMMORTAL_POSY, immortalOff.getWidth(), immortalOff.getHeight(), NULL);
+		}
+
+		if (checkCollision(immortal) == 2)
 			live--;
 
 		showScore(renderer);
@@ -379,6 +413,7 @@ void Game::play()
 			randVel++;
 			velFrame -= 0.5;
 		}
+		if(level > MAX_LEVEL) randVel += 0.005; // Increase speed in external time
 		// Frame rate
 		frameTime = SDL_GetTicks() - frameStart;
 		if (frameTime < DELAY_TIME)
