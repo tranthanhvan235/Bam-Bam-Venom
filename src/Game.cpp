@@ -150,6 +150,10 @@ void Game::load()
 		loadImage(immortalOff, "assets/icon/immortalOff.png");
 		loadImage(loseground, "assets/background/loseGround.png");
 		loadImage(heart, "assets/menu/heart.png");
+		loadImage(story[0], "assets/background/story/1.png");
+		loadImage(story[1], "assets/background/story/2.png");
+		loadImage(story[2], "assets/background/story/3.png");
+		loadImage(story[3], "assets/background/story/GameMode.png");
 		/*
 		customerRight.loadFromFile(renderer, "assets/images/seller/sellerRight.png");
 		customerLeft.loadFromFile(renderer, "assets/images/seller/sellerLeft.png");
@@ -270,9 +274,9 @@ int Game::checkCollision(bool immortal)
 
 		if (type == IMMORTAL)
 			snake->immortalTime = 0;
-        
-		if(type != BOMB)
-		score += 10;
+
+		if (type != BOMB)
+			score += 10;
 		Mix_PlayChannel(-1, eatSound, 0);
 		return 1;
 	}
@@ -301,18 +305,110 @@ void Game::renderUpLevel()
 
 	showScore(renderer);
 	showLive(renderer);
-    if(level == MAX_LEVEL + 1)
+	if (level == MAX_LEVEL + 1)
 	{
 		LevelUP.loadFromRenderedText(EXTERNAL_TIME, WHITE, levelUpFont);
 	}
-	else LevelUP.loadFromRenderedText(LEVEL_UP, WHITE, levelUpFont);
-	
+	else
+		LevelUP.loadFromRenderedText(LEVEL_UP, WHITE, levelUpFont);
+
 	LevelUP.render(SCREEN_WIDTH / 2 - LevelUP.getWidth() / 2, SCREEN_HEIGHT / 2 - LevelUP.getHeight() / 2, LevelUP.getWidth(), LevelUP.getHeight(), NULL);
 	//  Update screen
 	SDL_RenderPresent(renderer);
 	SDL_Delay(2000);
 }
+void Game::chooseMode()
+{
+	Uint32 frameStart, frameTime;
 
+	bool quit = false;
+	int &id = idStory;
+
+	while (!quit)
+	{
+		frameStart = SDL_GetTicks();
+		
+		// Handle events on queue
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				gameState = QUIT;
+				break;
+
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_ESCAPE:
+					gameState = MENU;
+					if (soundState == ON)
+						Mix_PlayChannel(-1, clickSound, 0);
+					break;
+
+				case SDLK_s:
+					if (id != 0)
+						break;
+					id = 3;
+					if (soundState == ON)
+						Mix_PlayChannel(-1, clickSound, 0);
+					break;
+
+				case SDLK_SPACE:
+					if (soundState == ON)
+						Mix_PlayChannel(-1, clickSound, 0);
+					if(id == 3)
+					   gameState = MENU;
+					else id++;
+					break;
+
+				case SDLK_1:
+					if (id != 3)
+						break;
+					playMode = 1;
+					gameState = PLAY;
+					if (soundState == ON)
+						Mix_PlayChannel(-1, clickSound, 0);
+					break;
+				case SDLK_2:
+					if (id != 3)
+						break;
+					playMode = 2;
+					gameState = PLAY;
+					if (soundState == ON)
+						Mix_PlayChannel(-1, clickSound, 0);
+					break;
+
+				default:
+					break;
+				}
+				break;
+			}
+
+			// Clear screen
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+			SDL_SetRenderDrawColor(renderer, 132, 78, 51, 255);
+			SDL_RenderClear(renderer);
+
+			// Render
+			story[id].render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+
+			// Update screen
+			SDL_RenderPresent(renderer);
+
+			// Frame rate
+			frameTime = SDL_GetTicks() - frameStart;
+			if (frameTime < DELAY_TIME)
+			{
+				SDL_Delay(DELAY_TIME - frameTime);
+			}
+
+			// Quit
+			if (gameState != MODE)
+				quit = true;
+		}
+	}
+}
 void Game::play()
 {
 	Uint32 frameStart, frameTime;
@@ -354,12 +450,11 @@ void Game::play()
 					if (isPaused)
 						break;
 					if (!snake->goingDown && !snake->goingUp)
-						{
-							snake->goingDown = true;
-							if (soundState)
+					{
+						snake->goingDown = true;
+						if (soundState)
 							Mix_PlayChannel(-1, jumpSound, 0);
-					
-						}
+					}
 					break;
 				}
 			}
@@ -413,7 +508,8 @@ void Game::play()
 			randVel++;
 			velFrame -= 0.5;
 		}
-		if(level > MAX_LEVEL) randVel += 0.005; // Increase speed in external time
+		if (level > MAX_LEVEL)
+			randVel += 0.005; // Increase speed in external time
 		// Frame rate
 		frameTime = SDL_GetTicks() - frameStart;
 		if (frameTime < DELAY_TIME)
@@ -531,7 +627,7 @@ void Game::menu()
 						switch (i)
 						{
 						case 0:
-							gameState = PLAY;
+							gameState = MODE;
 							break;
 						case 1:
 							gameState = HELP;
@@ -589,7 +685,7 @@ void Game::menu()
 					switch (curId)
 					{
 					case 0:
-						gameState = PLAY;
+						gameState = MODE;
 						break;
 					case 1:
 						gameState = HELP;
@@ -783,6 +879,9 @@ void Game::manageState()
 		{
 		case MENU:
 			menu();
+			break;
+		case MODE:
+		    chooseMode();
 			break;
 		case HELP:
 			help();

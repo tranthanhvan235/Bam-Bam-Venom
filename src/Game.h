@@ -29,6 +29,7 @@ public:
     void load();
 
     void play();
+    void chooseMode();
     void menu();
     void help();
     void lose();
@@ -64,6 +65,7 @@ private:
     Snake* snake;
 
     bool addFruit = false;
-
+    int idStory = 0;
+    int playMode;
     int checkCollision(bool immortal);
 };

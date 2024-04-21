@@ -15,7 +15,7 @@ extern TTF_Font *menuFont,									 // Menu font
 
 extern Texture title, version, paused, LevelUP; // Title texture
 extern Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart, immortalOn, immortalOff; // Background texture
-extern Texture snakeCute[51];
+extern Texture snakeCute[51], story[4];
 
 extern Mix_Music *music, *helpMusic;
 extern Mix_Chunk *music_soundClick, *clickSound, *externalTime, *levelSound, *loseSound, *eatSound, *endImmortalTime, *jumpSound, *fruitDown, *varSound, *transSound; // Sound

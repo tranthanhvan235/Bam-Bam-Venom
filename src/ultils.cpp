@@ -53,7 +53,7 @@ void showHighestScore(SDL_Renderer *renderer)
 {
 	SDL_Color textColor = WHITE;
 	std::string highestScoreText = "Your score: " + std::to_string(score) + "           ";
-	highestScoreText = "Highest Score: " + std::to_string(highestScore);
+	highestScoreText += "Highest Score: " + std::to_string(highestScore);
 	scoreTexture.loadFromRenderedText(highestScoreText, textColor, highestScoreFont);
 	scoreTexture.render(HIGHEST_SCORE_POSX, HIGHEST_SCORE_POSY, scoreTexture.getWidth(), scoreTexture.getHeight(), NULL);
 }

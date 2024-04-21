@@ -34,6 +34,7 @@ enum gameState
     PLAY = 2,
     HELP = 3,
     LOSE = 4,
+	MODE = 5
 };
 
 // Buttons
@@ -82,7 +83,7 @@ const int SCORE_POSY = 10;
 const int SCORE_SIZE = 40;
 
 // Highest score
-const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 150;
+const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 350;
 const int HIGHEST_SCORE_POSY = SCREEN_HEIGHT / 2 + 150;
 const int HIGHEST_SCORE_SIZE = 50;
 

@@ -6,7 +6,7 @@ TTF_Font *menuFont,											 // Menu font
 
 Texture title, version, paused, LevelUP; // Title texture
 Texture background, backgroundFull, helpground, musicOn, soundOn, musicOff, soundOff, gameground, stand, loseground, heart, immortalOn, immortalOff; // Background texture
-Texture snakeCute[51];
+Texture snakeCute[51], story[4];
 
 Mix_Music *music, *helpMusic;
 Mix_Chunk *music_soundClick, *clickSound, *externalTime, *levelSound, *loseSound, *eatSound, *endImmortalTime, *jumpSound, *fruitDown, *varSound, *transSound; // Sound
