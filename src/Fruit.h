@@ -30,6 +30,7 @@ public:
     int eaten = false;
     double posX, posY;
     double velX, velY;
+    double calcPosX();
 
 private:
     double frame;

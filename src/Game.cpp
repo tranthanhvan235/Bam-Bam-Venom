@@ -108,7 +108,7 @@ void Game::load()
 		loadFont(versionFont, "assets/font/SNAKV___.ttf", VERSION_SIZE);
 		// loadFont(scoreFont, "assets/font/FunSnake.otf", SCORE_SIZE);
 		loadFont(scoreFont, "assets/font/Diane Amorta.otf", SCORE_SIZE);
-		loadFont(highestScoreFont, "assets/font/Lovely Kids.ttf", HIGHEST_SCORE_SIZE);
+		loadFont(highestScoreFont, "assets/font/Buycat.ttf", HIGHEST_SCORE_SIZE);
 		loadFont(levelUpFont, "assets/font/Groen California Sans.ttf", LEVEL_SIZE);
 	}
 
@@ -148,7 +148,7 @@ void Game::load()
 		}
 		loadImage(immortalOn, "assets/icon/immortalOn.png");
 		loadImage(immortalOff, "assets/icon/immortalOff.png");
-		loadImage(loseground, "assets/background/loseGround.png");
+		loadImage(loseground, "assets/background/loseGame.png");
 		loadImage(heart, "assets/menu/heart.png");
 		loadImage(story[0], "assets/background/story/1.png");
 		loadImage(story[1], "assets/background/story/2.png");
@@ -253,7 +253,7 @@ int Game::checkCollision(bool immortal)
 	int snake_fruit = -1; // index fruit var snake if = -1 not var
 	Collision snakeCol = snake->getCol();
 	for (int i = 0; i < fruit.size(); i++)
-		if (fruit[i]->checkCollision(snakeCol))
+		if (fruit[i]->checkCollision(snakeCol) && playMode == 2)
 		{
 			snake_fruit = i;
 			break;
@@ -265,7 +265,7 @@ int Game::checkCollision(bool immortal)
 
 		int type = fruit[snake_fruit]->getType();
 		fruit.erase(fruit.begin() + snake_fruit);
-
+        if(playMode == 1) addFruit = true;
 		if (type == BOMB && !immortal)
 		{
 			Mix_PlayChannel(-1, varSound, 0);
@@ -363,6 +363,7 @@ void Game::chooseMode()
 					break;
 
 				case SDLK_1:
+				case SDLK_KP_1:
 					if (id != 3)
 						break;
 					playMode = 1;
@@ -371,6 +372,7 @@ void Game::chooseMode()
 						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 				case SDLK_2:
+				case SDLK_KP_2:
 					if (id != 3)
 						break;
 					playMode = 2;
@@ -429,6 +431,9 @@ void Game::play()
 			case SDL_QUIT:
 				gameState = QUIT;
 				break;
+			case SDL_MOUSEBUTTONUP:
+			    isPaused = isPaused xor 1;
+					break;
 			}
 			if (event.type == SDL_KEYDOWN)
 			{
@@ -442,6 +447,7 @@ void Game::play()
 					isPaused = isPaused xor 1;
 					break;
 				case SDLK_s:
+				    if(playMode == 2)
 					addFruit = true;
 					break;
 
@@ -537,6 +543,7 @@ void Game::menuReset()
 
 	if (soundState)
 		Mix_Resume(-1);
+	curId = -1;
 	isPaused = false;
 }
 
@@ -649,6 +656,7 @@ void Game::menu()
 				{
 				case SDLK_UP:
 				case SDLK_w:
+				    if(curId == -1) curId = 3;
 					buttons[curId].changeColor(BROWN);
 					if (curId > 0)
 					{
@@ -662,6 +670,7 @@ void Game::menu()
 
 				case SDLK_DOWN:
 				case SDLK_s:
+				    if(curId == -1) curId = 0;
 					buttons[curId].changeColor(BROWN);
 					if (curId + 1 < NUM_BUTTONS)
 					{
@@ -679,6 +688,7 @@ void Game::menu()
 				{
 				case SDLK_KP_ENTER:
 				case SDLK_RETURN:
+				    if(curId == -1) break;
 					buttons[curId].changeColor(SAND);
 					if (soundState == ON)
 						Mix_PlayChannel(-1, clickSound, 0);
@@ -837,7 +847,8 @@ void Game::lose()
 						Mix_PlayChannel(-1, clickSound, 0);
 					break;
 
-				case SDLK_SPACE:
+				case SDLK_RETURN:
+				case SDLK_KP_ENTER:
 					gameState = MENU;
 					if (soundState)
 						Mix_PlayChannel(-1, clickSound, 0);

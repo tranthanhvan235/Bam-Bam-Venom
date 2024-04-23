@@ -55,6 +55,9 @@ void showHighestScore(SDL_Renderer *renderer)
 	std::string highestScoreText = "Your score: " + std::to_string(score) + "           ";
 	highestScoreText += "Highest Score: " + std::to_string(highestScore);
 	scoreTexture.loadFromRenderedText(highestScoreText, textColor, highestScoreFont);
+
+	const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - scoreTexture.getWidth() / 2;
+	const int HIGHEST_SCORE_POSY = SCREEN_HEIGHT / 2 + 100;
 	scoreTexture.render(HIGHEST_SCORE_POSX, HIGHEST_SCORE_POSY, scoreTexture.getWidth(), scoreTexture.getHeight(), NULL);
 }
 
@@ -67,7 +70,7 @@ int levelUp()
 		return 1;
 	}
 
-	if(score >= LEVEL_POINT[level] && level < MAX_LEVEL + 1) 
+	if (score >= LEVEL_POINT[level] && level < MAX_LEVEL + 1)
 	{
 		level++;
 		Mix_PlayChannel(-1, externalTime, 0);

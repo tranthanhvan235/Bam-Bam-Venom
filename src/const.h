@@ -15,7 +15,7 @@ const int  SCREEN_WIDTH = 1366;
 const int  SCREEN_HEIGHT = 768;
 
 const char WINDOW_TITLE[] = "Bam Bam Venom";
-const char VERSION_INFO[] = "VERSION: 1.0";
+const char VERSION_INFO[] = "VERSION: 2.0";
 const char PAUSED_GAME[] = "Pause";
 const char LEVEL_UP[] = "LEVEL UP !";
 const char EXTERNAL_TIME[] = "EXTERNAL TIME !";
@@ -83,8 +83,6 @@ const int SCORE_POSY = 10;
 const int SCORE_SIZE = 40;
 
 // Highest score
-const int HIGHEST_SCORE_POSX = SCREEN_WIDTH / 2 - 350;
-const int HIGHEST_SCORE_POSY = SCREEN_HEIGHT / 2 + 150;
 const int HIGHEST_SCORE_SIZE = 50;
 
 // Live
@@ -105,9 +103,9 @@ const int IMMORTAL_POSY = 10;
 // Level
 const int MIN_LEVEL = 1;
 const int MAX_LEVEL = 6;
-// const int LEVEL_POINT[] = {0, 50, 100, 250, 350, 700};
+const int LEVEL_POINT[] = {0, 20, 50, 100, 150, 200};
 
-const int LEVEL_POINT[] = {0, 10, 20, 30, 40, 50, 100};
+//const int LEVEL_POINT[] = {0, 10, 20, 30, 40, 50, 100};
 // FRUIT VARIABLES
 const int NUM_FRUIT = 11;
 

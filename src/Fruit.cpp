@@ -91,7 +91,6 @@ bool Fruit::checkCollision(const Collision &x)
 void Fruit::moveFruit()
 {
     int onGround = 500;
-    if(type == BOMB) onGround -= 45;
     if (posY < onGround)
         {
             posY += velY;
@@ -104,19 +103,13 @@ void Fruit::moveFruit()
     else velX = randVel;
     
     posX += velX;
-
-    if (posX > SCREEN_WIDTH)
-    {
-        posX = -fruit.getWidth();
-        posY = 0;
-        velY = randVel + 2;
-    }
 }
 // Render
 void Fruit::render()
 {
     fruitCol.setCollision(posX + 40, posY + 40, fruit.getWidth() - 80, fruit.getHeight() - 80);
     fruit.render(posX, posY, fruit.getHeight(), fruit.getHeight(), NULL);
+    //fruitCol.render();
 }
 
 void Fruit::generate(bool isPaused)
@@ -154,4 +147,11 @@ Collision Fruit::getCol()
 int Fruit::getType()
 {
     return type;
+}
+
+double Fruit::calcPosX()
+{
+    double t = (500 - posY)/velY;
+    double futurePosX = posX + t * velX;
+    return futurePosX;
 }

@@ -3,10 +3,6 @@
 # My First Game
 This is my own first game project using `C`, `C++` and ` SDL2 libraries` at University of Engineering and Technology, Vietnam National University.
 
-# Table of of Contents
--[Information](https://github.com/tranthanhvan235/Bam-Bam-Venom#information)
-
-
 ## Information
 **Name:**  Trần Thị Thanh Vân <br />
 **Student ID:** 23020168 <br />
