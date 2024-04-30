@@ -250,10 +250,17 @@ void Game::handlePlayEvent()
 
 int Game::checkCollision(bool immortal)
 {
+	// remove fruit not in screen
+	for (int i = 0; i < fruit.size(); i++)
+	{
+		if (fruit[i]->getPosX() >= SCREEN_WIDTH)
+			fruit.erase(fruit.begin() + i);
+	}
+
 	int snake_fruit = -1; // index fruit var snake if = -1 not var
 	Collision snakeCol = snake->getCol();
 	for (int i = 0; i < fruit.size(); i++)
-		if (fruit[i]->checkCollision(snakeCol) && playMode == 2)
+		if (fruit[i]->checkCollision(snakeCol))
 		{
 			snake_fruit = i;
 			break;
@@ -265,7 +272,7 @@ int Game::checkCollision(bool immortal)
 
 		int type = fruit[snake_fruit]->getType();
 		fruit.erase(fruit.begin() + snake_fruit);
-        if(playMode == 1) addFruit = true;
+
 		if (type == BOMB && !immortal)
 		{
 			Mix_PlayChannel(-1, varSound, 0);
@@ -327,7 +334,7 @@ void Game::chooseMode()
 	while (!quit)
 	{
 		frameStart = SDL_GetTicks();
-		
+
 		// Handle events on queue
 		while (SDL_PollEvent(&event))
 		{
@@ -357,9 +364,10 @@ void Game::chooseMode()
 				case SDLK_SPACE:
 					if (soundState == ON)
 						Mix_PlayChannel(-1, clickSound, 0);
-					if(id == 3)
-					   gameState = MENU;
-					else id++;
+					if (id == 3)
+						gameState = MENU;
+					else
+						id++;
 					break;
 
 				case SDLK_1:
@@ -419,6 +427,7 @@ void Game::play()
 
 	bool quit = false;
 	int id = 1;
+	int cnt = 0;
 	while (!quit)
 	{
 		frameStart = SDL_GetTicks();
@@ -432,11 +441,11 @@ void Game::play()
 				gameState = QUIT;
 				break;
 			case SDL_MOUSEBUTTONUP:
-			    isPaused = isPaused xor 1;
-					break;
-			}
-			if (event.type == SDL_KEYDOWN)
-			{
+				isPaused = isPaused xor 1;
+				break;
+
+			case SDL_KEYDOWN:
+
 				switch (event.key.keysym.sym)
 				{
 				case SDLK_ESCAPE:
@@ -447,12 +456,13 @@ void Game::play()
 					isPaused = isPaused xor 1;
 					break;
 				case SDLK_s:
-				    if(playMode == 2)
-					addFruit = true;
+					if (playMode == 2)
+						addFruit = true;
 					break;
 
 				case SDLK_SPACE:
 				case SDLK_DOWN:
+					std::cout << "push" << ++cnt << "\n";
 					if (isPaused)
 						break;
 					if (!snake->goingDown && !snake->goingUp)
@@ -464,7 +474,6 @@ void Game::play()
 					break;
 				}
 			}
-			// handlePlayEvent();
 		}
 
 		// Clear screen
@@ -476,6 +485,11 @@ void Game::play()
 		gameground.render(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
 		wood->generate(isPaused);
+
+		int randCnt = rand() % 2 + 2;
+		if (fruit.size() <= randCnt)
+			addFruit = true;
+
 		if (addFruit)
 		{
 			Fruit *newFruit = new Fruit();
@@ -545,6 +559,8 @@ void Game::menuReset()
 		Mix_Resume(-1);
 	curId = -1;
 	isPaused = false;
+	for (int i = 0; i < NUM_BUTTONS; i++)
+		buttons[i].changeColor(BROWN);
 }
 
 void Game::menu()
@@ -656,7 +672,8 @@ void Game::menu()
 				{
 				case SDLK_UP:
 				case SDLK_w:
-				    if(curId == -1) curId = 3;
+					if (curId == -1)
+						curId = 3;
 					buttons[curId].changeColor(BROWN);
 					if (curId > 0)
 					{
@@ -670,7 +687,8 @@ void Game::menu()
 
 				case SDLK_DOWN:
 				case SDLK_s:
-				    if(curId == -1) curId = 0;
+					if (curId == -1)
+						curId = 0;
 					buttons[curId].changeColor(BROWN);
 					if (curId + 1 < NUM_BUTTONS)
 					{
@@ -688,7 +706,8 @@ void Game::menu()
 				{
 				case SDLK_KP_ENTER:
 				case SDLK_RETURN:
-				    if(curId == -1) break;
+					if (curId == -1)
+						break;
 					buttons[curId].changeColor(SAND);
 					if (soundState == ON)
 						Mix_PlayChannel(-1, clickSound, 0);
@@ -892,7 +911,7 @@ void Game::manageState()
 			menu();
 			break;
 		case MODE:
-		    chooseMode();
+			chooseMode();
 			break;
 		case HELP:
 			help();

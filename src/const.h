@@ -102,7 +102,7 @@ const int IMMORTAL_POSY = 10;
 
 // Level
 const int MIN_LEVEL = 1;
-const int MAX_LEVEL = 6;
+const int MAX_LEVEL = 5;
 const int LEVEL_POINT[] = {0, 20, 50, 100, 150, 200};
 
 //const int LEVEL_POINT[] = {0, 10, 20, 30, 40, 50, 100};
